@@ -1,19 +1,15 @@
 {
-  "name": "vue3-app",
-  "private": true,
-  "version": "0.0.0",
+  "name": "html-to-a4-template",
+  "private": false,
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "vite build"
   },
   "dependencies": {
-    "vue": "^3.2.47"
+    "jquery": "3.6.4"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.1.0",
-    "sass": "^1.58.3",
     "vite": "^4.2.0"
   }
 }
