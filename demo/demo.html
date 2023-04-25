@@ -1,0 +1,43 @@
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <script src="https://unpkg.com/vue@3.2.37"></script>
+  <!-- <link rel="stylesheet" href="https://unpkg.com/element-plus@2.2.9/dist/index.css">
+  <script src="https://unpkg.com/element-plus@2.2.9"></script> -->
+  <title>Demo</title>
+</head>
+
+<body>
+  <div id="app">
+    <h1>{{ title }}</h1>
+  </div>
+  <script>
+    const App = {
+      data() {
+        return {
+          title: 'HTML Template via vue3 & element-plus'
+        };
+      },
+      mounted() {},
+      computed: {},
+      methods: {},
+    };
+    const app = Vue.createApp(App);
+    app.mount("#app");
+  </script>
+  <style>
+    body {
+      font-family: Avenir, Helvetica, Arial, sans-serif;
+      color: #2c3e50;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+    }
+  </style>
+</body>
+
+</html>
