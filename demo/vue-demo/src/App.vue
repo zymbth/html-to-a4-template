@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-// import pagingUtil from '@/utils/pagging.js'
-import pagingUtil from '../dist/paging-util.js'
-import { mockParagraph } from '@/utils/mock.js'
+import pagingUtil from './utils/paging.js'
+import { mockParagraph } from './utils/mock.js'
+import pagingUtil1 from 'ymzhao-test'
 
-console.log('pagingUtil',pagingUtil)
+const { testFunc } = pagingUtil1()
+console.log(testFunc(123))
+
 const { execPaging } = pagingUtil()
 
 const tableData = ref([])
@@ -71,6 +73,6 @@ function getData() {
   }
 }
 </style>
-<!-- <style lang="scss">
-@import '../styles/print.scss';
-</style> -->
+<style lang="scss">
+@import './styles/print.css';
+</style>

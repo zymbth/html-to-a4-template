@@ -6,6 +6,7 @@
   <script src="https://unpkg.com/vue@3.2.37"></script>
   <!-- <link rel="stylesheet" href="https://unpkg.com/element-plus@2.2.9/dist/index.css">
   <script src="https://unpkg.com/element-plus@2.2.9"></script> -->
+  <!-- <script src="https://unpkg.com/html-to-a4-template@0.0.1/dist/index.js"></script> -->
   <title>Demo</title>
 </head>
 
@@ -13,14 +14,17 @@
   <div id="app">
     <h1>{{ title }}</h1>
   </div>
-  <script>
+  <script type="module">
+    import pagingUtil from 'https://unpkg.com/html-to-a4-template@0.0.1/dist/index.js'
     const App = {
       data() {
         return {
           title: 'HTML Template via vue3 & element-plus'
         };
       },
-      mounted() {},
+      mounted() {
+        console.log(pagingUtil())
+      },
       computed: {},
       methods: {},
     };
