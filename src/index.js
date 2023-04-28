@@ -26,9 +26,9 @@ import './styles/print.css'
  * 
  * @example
  * import { ref, onMounted, nextTick } from 'vue'
- * import pagingUtil from '@/utils/pagging.js'
+ * import html2a4tmpl from 'html-to-a4-template'
  * 
- * const { execPaging } = pagingUtil()
+ * const { execPaging } = html2a4tmpl()
  * 
  * onMounted(() => {
  *   // 获取数据
@@ -41,7 +41,7 @@ import './styles/print.css'
  *   })
  * })
  */
-export default function pagingUtil() {
+export default function html2a4tmpl(root) {
   // 获取浏览器1mm 像素长度
   const pixel_ratio = (function getOneMmsPx() {
     let div = document.createElement("div");
@@ -60,6 +60,20 @@ export default function pagingUtil() {
 
   // Object.prototype.notHidden = notHidden
   $('#app').__proto__.notHidden = notHidden
+
+  if($(root).length) {
+    $(root).addClass('print-container')
+    $(root).children().notHidden().each(function () {
+      $(this).addClass('break-page')
+      $(this).children().notHidden().each(function (_, el) {
+        if(el.tagName === 'table')
+          $(this).addClass('break-table')
+        else
+          $(this).addClass('need-break')
+      })
+    })
+  }
+
   // 执行分页
   function execPaging() {
     console.log('start paging')
