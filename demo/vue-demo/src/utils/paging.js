@@ -1,4 +1,6 @@
-import * as $ from 'jquery'
+// import * as $ from 'jquery'
+import $$ from 'cash-dom'
+import { notHidden } from './utils.js'
 
 /**
  * 公共分页工具方法
@@ -47,19 +49,22 @@ export default function pagingUtil() {
     div.style.width = "1mm";
     document.querySelector("body").appendChild(div);
     let mm1 = document.getElementById("mm").getBoundingClientRect();
-    $(div).remove()
+    $$('#mm').remove()
+    // $(div).remove()
     return mm1.width;
   })();
-  console.log('pixel_ratio', pixel_ratio)
+  // console.log('pixel_ratio', pixel_ratio)
 
   // 分页程序递归限制，避免出现分页bug时死循环
   let recursionLimit = 500
 
+  // Object.prototype.notHidden = notHidden
+  $$('#app').__proto__.notHidden = notHidden
   // 执行分页
   function execPaging() {
     console.log('start paging')
-    $('table.break-table').children('thead').addClass('need-break thead_break');
-    $('table.break-table tbody tr').addClass('need-break table_break');
+    $$('table.break-table').children('thead').addClass('need-break thead_break')
+    $$('table.break-table tbody tr').addClass('need-break table_break');
     // 依次处理break-page分页
     let pageEl = getNextPageEl()
     while(pageEl.length) {
@@ -75,9 +80,13 @@ export default function pagingUtil() {
    */
   function getNextPageEl(pageEl) {
     if(!pageEl) {
-      return $('.break-page').not(':hidden').first()
+      // return $('.break-page').not(':hidden').first()
+      return $$('.break-page').notHidden().first()
+      // return $$('.break-page').first()
     } else {
-      return pageEl.nextAll('.break-page').not(':hidden').first()
+      // return pageEl.nextAll('.break-page').not(':hidden').first()
+      return pageEl.nextAll('.break-page').notHidden().first()
+      // return pageEl.nextAll('.break-page').first()
     }
   }
 
@@ -105,34 +114,38 @@ export default function pagingUtil() {
     const pageElPaddingBottom = parseInt(currPageEl.css('paddingBottom'))
     let modified = false
     let new_div = null
-    currPageEl.find('.need-break').not(':hidden').each(function (index) {
+    // currPageEl.find('.need-break').each(function (index, el) {
+    currPageEl.find('.need-break').notHidden().each(function (index, el) {
       // 超出判断：当前元素的底部距离页面顶部的距离 + 当前元素的margin-bottom > 页面高度
       if (
-        $(this).offset().top +
-          $(this).outerHeight() -
+        $$(this).offset().top +
+          $$(this).outerHeight() -
           pageElOffsetTop +
-          parseInt($(this).css('marginBottom')) >
+          parseInt($$(this).css('marginBottom')) >
         294 * pixel_ratio - pageElPaddingBottom
       ) {
         modified = true
         let newClass = currPageEl.attr('class')
         // 新的页面元素添加类 new-break-page，仅作标识
         if (!currPageEl.hasClass('new-break-page')) newClass += ' new-break-page'
-        new_div = $(`<div class="${newClass}" style="display:block"></div>`)
+        new_div = $$(`<div class="${newClass}" style="display:block"></div>`)
         // 分页情景
         // 一、表格跨页————拆分表格进下一页（new_div），包括表头、表体处理
-        if ($(this).hasClass('table_break')) {
+        if ($$(this).hasClass('table_break')) {
           // 新表格
-          var table = $(`
-            <table class="${$(this).parents('table').attr('class')}">
-              <tbody></tbody>
-            </table>
-          `)
-          var add_dom = $(this) // 当前行，也是跨页发生的行
+          // var table = $$(`
+          //   <table class="${$$(this).parents('table').attr('class')}">
+          //     <tbody></tbody>
+          //   </table>
+          // `)
+          var table = $$(`<table class="${$$(this).parents('table').attr('class')}"></table>`)
+          table.append('<tbody></tbody>')
+          var add_dom = $$(this) // 当前行，也是跨页发生的行
           // td超过一页的处理（否则，该情况下会出现无限分页bug）
           let tmpFlag = index > 1
           if (index == 1) {
-            tmpFlag = $(this).find('.need-break').not(':hidden').not('.thead_break').length !== 0
+            tmpFlag = $$(this).find('.need-break').notHidden().not('.thead_break').length !== 0
+            // tmpFlag = $$(this).find('.need-break').not('.thead_break').length !== 0
           }
           if (tmpFlag) {
             table.prepend(add_dom.parents('table').children('thead').clone()) // 复制表头
@@ -144,7 +157,7 @@ export default function pagingUtil() {
              * 根据上一步结果，如果有必要，调整上一行单元格的rowspan，拷贝因分页导致纵向合并到当前行而被分割的单元格，然后设置新单元格的rowspan
              */
             // 当前td之前的所有tr
-            let prevTrs = $(this).prevAll('tr')
+            let prevTrs = $$(this).prevAll('tr')
             // 存储当前行每列向下占据(包括自身)的单元格数
             let rCounts = []
             /**
@@ -160,21 +173,21 @@ export default function pagingUtil() {
               const currTr = prevTrs[i],
                 isFirstTr = i === prevTrs.length - 1
               // 当前行的所有td
-              const curTds = $(currTr).find('td')
+              const curTds = $$(currTr).find('td')
               // 如果不是第一行，需要减去上一行一整行
               if (!isFirstTr) rCounts = rCounts.map(p => (p - 1 > 0 ? p - 1 : 0))
               // 如果是第一行，需要初始化rCounts
               if (isFirstTr) {
                 let cols = 0
                 for (let j = 0, len = curTds.length; j < len; j++)
-                  cols += +$(curTds[j]).attr('colspan') || 1
+                  cols += +$$(curTds[j]).attr('colspan') || 1
                 rCounts = new Array(cols).fill(0)
               }
               // 遍历当前行的所有td，计算每列需要向下占据(包括自身)的单元格数（包括本行）
               for (let j = 0, len1 = curTds.length; j < len1; j++) {
                 const currTd = curTds[j] // 当前td
-                const rowspan = +$(currTd).attr('rowspan') || 1 // 当前td的rowspan
-                const colspan = +$(currTd).attr('colspan') || 1 // 当前td的colspan
+                const rowspan = +$$(currTd).attr('rowspan') || 1 // 当前td的rowspan
+                const colspan = +$$(currTd).attr('colspan') || 1 // 当前td的colspan
                 // 如果当前td的colspan大于1，需要计算每列的合并单元格数（向下占据(包括自身)的格数一致）
                 if (colspan > 0) {
                   // 找到当前td的起始列下标（区分td在当前行内的下标与表格行中的实际列数），插入占格数到rCounts
@@ -196,7 +209,7 @@ export default function pagingUtil() {
             // ['N', 'N', 'N', 'N', 'N', 'N', 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4]
             let currRCounts = rCounts.map(p => (p > 1 ? 'N' : 0))
             add_dom.find('td').each(function (idx1) {
-              const colspan = +$(this).attr('colspan') || 1
+              const colspan = +$$(this).attr('colspan') || 1
               const startIdx = currRCounts.findIndex(p => p === 0)
               for (let i = 0; i < colspan; i++) {
                 currRCounts[startIdx + i] = idx1 + 1
@@ -211,9 +224,9 @@ export default function pagingUtil() {
               const [i, j, rowspan, colspan] = rCells[x] || []
               const splitTdRs = rowspan - i - 1 // 当前列纵向合并单元格被分割到当前行的个数（新的rowspan）
               if (splitTdRs <= 0) continue // 跳过：当前列有过纵向合并单元格，但是没有被分割到当前行
-              const prevTd = $(prevTrs[i]).find('td')[j] // 待分割处理单元格
-              $(prevTd).attr('rowspan', rowspan - splitTdRs) // 修改原单元格的rowspan
-              const splitTd = $(prevTd).clone().attr('rowspan', splitTdRs) // 生成新的单元格
+              const prevTd = $$(prevTrs[i]).find('td')[j] // 待分割处理单元格
+              $$(prevTd).attr('rowspan', rowspan - splitTdRs) // 修改原单元格的rowspan
+              const splitTd = $$(prevTd).clone().attr('rowspan', splitTdRs) // 生成新的单元格
               const splitTdTag = 'splitTd' + x // 生成新的单元格的标识
               splitTds[splitTdTag] = splitTd // 存储新的单元格
               let startIdx = currRCounts.findIndex(p => p === 'N') // 找到当前行的空位
@@ -239,9 +252,9 @@ export default function pagingUtil() {
             // 4）常规处理：复制表格及后续元素到下一页
             table.children('tbody').append(copy_tr_dom.clone()) // copy tr
             table.children('tbody').append(add_dom.nextAll().clone()) // copy nextAll tr
-            add_dom.nextAll().remove() // remove nexAll tr
             new_div.append(table) // 添加复制的表格
             new_div.append(add_dom.parents('table').nextAll().clone()) // 复制表格后元素到下一页
+            add_dom.nextAll().remove() // remove nexAll tr
             add_dom.parents('table').nextAll().remove() // 移除表格后元素
             add_dom.remove() // 移除tr
           } else {
@@ -259,7 +272,7 @@ export default function pagingUtil() {
             }
             // 跨页且无法分割的tr（存在占一整页的单元格，单元格是最小分割单元，无法处理）
             // 方案：为避免分页bug，移入定高容器中（内容显示不全）
-            let tmp_div = $(
+            let tmp_div = $$(
               `<div style="height:${294 * pixel_ratio - 100}px;overflow:hidden;"></div>`
             ) // 定高容器
             add_dom.parents('.break-page').append(tmp_div)
@@ -267,18 +280,18 @@ export default function pagingUtil() {
           }
         }
         // 二、表头跨页————拷贝表格本身及后续元素进下一页（new_div）
-        else if ($(this).hasClass('thead_break')) {
-          new_div.append($(this).parents('table').clone())
-          new_div.append($(this).parents('table').nextAll().clone())
-          $(this).parents('table').nextAll().remove()
-          $(this).parents('table').remove()
+        else if ($$(this).hasClass('thead_break')) {
+          new_div.append($$(this).parents('table').clone())
+          new_div.append($$(this).parents('table').nextAll().clone())
+          $$(this).parents('table').nextAll().remove()
+          $$(this).parents('table').remove()
         }
         // 三、普通跨页————拷贝元素本身及后续元素进下一页（new_div）
         else {
-          new_div.append($(this).clone())
-          new_div.append($(this).nextAll().clone())
-          $(this).nextAll().remove()
-          $(this).remove()
+          new_div.append($$(this).clone())
+          new_div.append($$(this).nextAll().clone())
+          $$(this).nextAll().remove()
+          $$(this).remove()
         }
         currPageEl.after(new_div)
         // 跳出循环（一个break-page最多分页一次）

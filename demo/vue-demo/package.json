@@ -9,9 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "jquery": "3.6.4",
-    "vue": "^3.2.47",
-    "ymzhao-test": "^0.0.1"
+    "cash-dom": "^8.1.5",
+    "vue": "^3.2.47"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
