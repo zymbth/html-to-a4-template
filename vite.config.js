@@ -5,7 +5,8 @@ export default defineConfig({
     lib: {
       entry: 'src/index.js',
       name: 'html2a4tmpl',
-      fileName: 'index'
+      formats: ['es','umd'],
+      fileName: (format) => `html2a4tmpl.${format}.js`
     },
     rollupOptions: {
       output: {
