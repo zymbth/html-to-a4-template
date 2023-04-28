@@ -1,5 +1,5 @@
 import $ from 'cash-dom'
-import { notHidden } from './utils.js'
+import { notHidden } from './utils/utils.js'
 import './styles/print.css'
 
 /**
