@@ -1,9 +1,9 @@
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
-import pagingUtil from './utils/paging.js'
 import { mockParagraph } from './utils/mock.js'
+import html2a4tmpl from 'html-to-a4-template'
 
-const { execPaging } = pagingUtil()
+const { execPaging } = html2a4tmpl()
 
 const tableData = ref([])
 const paragraphs1 = Array.from({ length: 5 }).map((_, idx) => {
@@ -68,7 +68,4 @@ function getData() {
     text-indent: 2em;
   }
 }
-</style>
-<style lang="scss">
-@import './styles/print.css';
 </style>

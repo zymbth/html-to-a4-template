@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "cash-dom": "^8.1.5",
+    "html-to-a4-template": "0.2.1",
     "vue": "^3.2.47"
   },
   "devDependencies": {
