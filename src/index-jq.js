@@ -1,5 +1,4 @@
-import $ from 'cash-dom'
-import { notHidden } from './utils.js'
+import * as $ from 'jquery'
 import './styles/print.css'
 
 /**
@@ -49,21 +48,18 @@ export default function pagingUtil() {
     div.style.width = "1mm";
     document.querySelector("body").appendChild(div);
     let mm1 = document.getElementById("mm").getBoundingClientRect();
-    $('#mm').remove()
-    // $(div).remove()
+    $(div).remove()
     return mm1.width;
   })();
-  // console.log('pixel_ratio', pixel_ratio)
+  console.log('pixel_ratio', pixel_ratio)
 
   // 分页程序递归限制，避免出现分页bug时死循环
   let recursionLimit = 500
 
-  // Object.prototype.notHidden = notHidden
-  $('#app').__proto__.notHidden = notHidden
   // 执行分页
   function execPaging() {
     console.log('start paging')
-    $('table.break-table').children('thead').addClass('need-break thead_break')
+    $('table.break-table').children('thead').addClass('need-break thead_break');
     $('table.break-table tbody tr').addClass('need-break table_break');
     // 依次处理break-page分页
     let pageEl = getNextPageEl()
@@ -80,13 +76,9 @@ export default function pagingUtil() {
    */
   function getNextPageEl(pageEl) {
     if(!pageEl) {
-      // return $('.break-page').not(':hidden').first()
-      return $('.break-page').notHidden().first()
-      // return $('.break-page').first()
+      return $('.break-page').not(':hidden').first()
     } else {
-      // return pageEl.nextAll('.break-page').not(':hidden').first()
-      return pageEl.nextAll('.break-page').notHidden().first()
-      // return pageEl.nextAll('.break-page').first()
+      return pageEl.nextAll('.break-page').not(':hidden').first()
     }
   }
 
@@ -114,8 +106,7 @@ export default function pagingUtil() {
     const pageElPaddingBottom = parseInt(currPageEl.css('paddingBottom'))
     let modified = false
     let new_div = null
-    // currPageEl.find('.need-break').each(function (index, el) {
-    currPageEl.find('.need-break').notHidden().each(function (index, el) {
+    currPageEl.find('.need-break').not(':hidden').each(function (index) {
       // 超出判断：当前元素的底部距离页面顶部的距离 + 当前元素的margin-bottom > 页面高度
       if (
         $(this).offset().top +
@@ -133,14 +124,16 @@ export default function pagingUtil() {
         // 一、表格跨页————拆分表格进下一页（new_div），包括表头、表体处理
         if ($(this).hasClass('table_break')) {
           // 新表格
-          var table = $(`<table class="${$(this).parents('table').attr('class')}"></table>`)
-          table.append('<tbody></tbody>')
+          var table = $(`
+            <table class="${$(this).parents('table').attr('class')}">
+              <tbody></tbody>
+            </table>
+          `)
           var add_dom = $(this) // 当前行，也是跨页发生的行
           // td超过一页的处理（否则，该情况下会出现无限分页bug）
           let tmpFlag = index > 1
           if (index == 1) {
-            tmpFlag = $(this).find('.need-break').notHidden().not('.thead_break').length !== 0
-            // tmpFlag = $(this).find('.need-break').not('.thead_break').length !== 0
+            tmpFlag = $(this).find('.need-break').not(':hidden').not('.thead_break').length !== 0
           }
           if (tmpFlag) {
             table.prepend(add_dom.parents('table').children('thead').clone()) // 复制表头
@@ -247,9 +240,9 @@ export default function pagingUtil() {
             // 4）常规处理：复制表格及后续元素到下一页
             table.children('tbody').append(copy_tr_dom.clone()) // copy tr
             table.children('tbody').append(add_dom.nextAll().clone()) // copy nextAll tr
+            add_dom.nextAll().remove() // remove nexAll tr
             new_div.append(table) // 添加复制的表格
             new_div.append(add_dom.parents('table').nextAll().clone()) // 复制表格后元素到下一页
-            add_dom.nextAll().remove() // remove nexAll tr
             add_dom.parents('table').nextAll().remove() // 移除表格后元素
             add_dom.remove() // 移除tr
           } else {

@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/zymbth/html-to-a4-template#readme",
   "dependencies": {
+    "cash-dom": "^8.1.5",
     "jquery": "3.6.4"
   },
   "devDependencies": {
