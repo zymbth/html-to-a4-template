@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
   <script src="https://unpkg.com/vue@3.2.37"></script>
   <link rel="stylesheet" href="https://unpkg.com/html-to-a4-template@0.2.1/dist/print.css">
-  <script src="https://unpkg.com/html-to-a4-template@0.2.1/dist/index.umd.js"></script>
+  <script src="https://unpkg.com/html-to-a4-template@0.2.1/dist/html2a4tmpl.umd.js"></script>
   <title>Demo umd format</title>
 </head>
 
@@ -36,11 +36,10 @@
           tableData: [],
           paragraphs1: [],
           paragraphs2: [],
-          pagingUtil: html2a4tmpl1()
+          pagingUtil: html2a4tmpl()
         };
       },
       created() {
-        console.log(this)
         this.paragraphs1 = Array.from({ length: 5 }).map((_, idx) => {
           return {
             id: idx + 1,
