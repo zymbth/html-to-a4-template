@@ -8,3 +8,14 @@ export function notHidden() {
     return !isHidden(el);
   });
 }
+
+/**
+ * typeof 获取数据类型
+ * @link https://juejin.cn/post/7000300249235357709#heading-3
+ * @param {any} value 
+ * @returns 
+ */
+export function mTypeof(value) {
+  return value instanceof Element ? "element" :
+    Object.prototype.toString.call(value).replace(/\[object\s(.+)\]/, "$1").toLowerCase()
+}

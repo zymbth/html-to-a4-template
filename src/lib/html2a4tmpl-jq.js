@@ -1,5 +1,5 @@
 import * as $ from 'jquery'
-import './styles/print.css'
+import '@/styles/print.css'
 
 /**
  * 公共分页工具方法

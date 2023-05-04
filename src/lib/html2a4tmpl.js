@@ -1,6 +1,6 @@
 import $ from 'cash-dom'
-import { notHidden } from './utils/utils.js'
-import './styles/print.css'
+import { notHidden, mTypeof } from '@/utils/utils.js'
+import '@/styles/print.css'
 
 /**
  * 公共分页工具方法
@@ -21,25 +21,10 @@ import './styles/print.css'
  * 表格分页单元：加上类 break-table，对跨页的表格进行拆分
  * 后续其它特殊处理的分页单元，需添加标识，在分页程序中添加对应的处理程序
  * @returns {Object} {
- *   execPaging: 执行分页（确保页面已经渲染完毕再执行）
+ *   execPaging: 执行分页（请确保页面已经渲染完毕再执行）
  * }
  * 
- * @example
- * import { ref, onMounted, nextTick } from 'vue'
- * import html2a4tmpl from 'html-to-a4-template'
- * 
- * const { execPaging } = html2a4tmpl()
- * 
- * onMounted(() => {
- *   // 获取数据
- *   getData().then((res) => {
- *     // 渲染页面
- *     nextTick(() => {
- *       // 执行分页
- *       execPaging()
- *     })
- *   })
- * })
+ * @example see readme
  */
 export default function html2a4tmpl(root) {
   // 获取浏览器1mm 像素长度
@@ -50,7 +35,6 @@ export default function html2a4tmpl(root) {
     document.querySelector("body").appendChild(div);
     let mm1 = document.getElementById("mm").getBoundingClientRect();
     $('#mm').remove()
-    // $(div).remove()
     return mm1.width;
   })();
   // console.log('pixel_ratio', pixel_ratio)
@@ -59,23 +43,27 @@ export default function html2a4tmpl(root) {
   let recursionLimit = 500
 
   // Object.prototype.notHidden = notHidden
-  $('#app').__proto__.notHidden = notHidden
+  $('body').__proto__.notHidden = notHidden
 
-  if($(root).length) {
-    $(root).addClass('print-container')
-    $(root).children().notHidden().each(function () {
-      $(this).addClass('break-page')
-      $(this).children().notHidden().each(function (_, el) {
-        if(el.tagName === 'table')
-          $(this).addClass('break-table')
-        else
-          $(this).addClass('need-break')
-      })
-    })
-  }
-
+  
   // 执行分页
   function execPaging() {
+    const rootParamType = mTypeof(root)
+    let rootEl
+    if(['string','element','htmlcollection'].includes(rootParamType)) rootEl = $(root)
+    if(rootEl?.length) {
+      rootEl.addClass('print-container')
+      rootEl.children().notHidden().each(function () {
+        $(this).addClass('break-page')
+        $(this).children().notHidden().each(function (_, el) {
+          if(el.tagName.toLowerCase() === 'table')
+            $(this).addClass('break-table')
+          else
+            $(this).addClass('need-break')
+        })
+      })
+    }
+
     console.log('start paging')
     $('table.break-table').children('thead').addClass('need-break thead_break')
     $('table.break-table tbody tr').addClass('need-break table_break');

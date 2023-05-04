@@ -39,10 +39,10 @@ table.break-table th {
 }
 
 @media print {
-  #print {
+  .print-container {
     width: 100% !important;
   }
-  #print .break-page {
+  .print-container .break-page {
     box-shadow: none;
     margin: 0;
     max-height: 294mm;

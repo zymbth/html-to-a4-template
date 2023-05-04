@@ -5,16 +5,7 @@
 Convert web pages to A4 size for preview and printing. Automatically paginate page content based on the concepts of "pages" and "pagination elements": iterate through each page, paginate recursively within each page until no further pagination is required.
 
 > Currently, this utility use `cash-dom` to manipulate element.
->
-> Currently, you need to add class of each "pages" and "pagination elements.
 
-```vue
-<div class="break-page">
-  <p class="need-break"></p>
-  ...
-</div>
-<!-- more pages -->
-```
 
 ## Installation
 
@@ -32,12 +23,63 @@ yarn add html-to-a4-template
 
 usage:
 
-```js
-import html2a4tmpl from 'html-to-a4-template'
+1. You can add class of each "pages" and "pagination elements".
 
-const { execPaging } = html2a4tmpl()
-// execute somewhere
-execPaging()
+```vue
+<template>
+  <div class="break-page">
+    <p class="need-break"></p>
+    <!-- more pagination elements -->
+  </div>
+  <!-- more pages -->
+</template>
+<script setup>
+import { ref, onMounted, nextTick } from 'vue'
+import html2a4tmpl from 'html-to-a4-template'
+import { getData } from 'your-api.js'
+
+onMounted(() => {
+  const { execPaging } = html2a4tmpl()
+
+  getData().then((res) => {
+    // render page by api response
+    nextTick(() => {
+      execPaging()
+    })
+  })
+})
+</script>
+```
+
+2. You can specify the root element(s), which would automatically scanned "pages" and "pagination elements" to add class
+
+```vue
+<template>
+  <div class="container">
+    <div>
+      <p></p>
+      <!-- more pagination elements -->
+    </div>
+    <!-- more pages -->
+  </div>
+  <!-- more containers -->
+</template>
+<script setup>
+import { ref, onMounted, nextTick } from 'vue'
+import html2a4tmpl from 'html-to-a4-template'
+import { getData } from 'your-api.js'
+
+onMounted(() => {
+  const { execPaging } = html2a4tmpl(document.getElementsByClassName('container'))
+
+  getData().then((res) => {
+    // render page by api response
+    nextTick(() => {
+      execPaging()
+    })
+  })
+})
+</script>
 ```
 
 ### Import in Browser
