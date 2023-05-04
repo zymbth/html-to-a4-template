@@ -17,16 +17,19 @@ const paragraphs2 = Array.from({ length: 6 }).map((_, idx) => {
   }
 })
 
+let execPaging = ref(null)
+
 onMounted(() => {
-  const { execPaging } = html2a4tmpl()
+  execPaging.value = html2a4tmpl().execPaging;
 
   getData().then((res) => {
     tableData.value = res
-    nextTick(() => {
-      execPaging()
-    })
+    // nextTick(() => {
+    //   execPaging()
+    // })
   })
 })
+defineExpose({ execPaging })
 
 function getData() {
   return new Promise((resolve, reject) => {
