@@ -9,6 +9,8 @@ Convert web pages to A4 size for preview and printing. Automatically paginate pa
 
 ## Installation
 
+> The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
+
 ### Using Package Manager
 
 install:
@@ -28,7 +30,7 @@ usage:
 ```vue
 <template>
   <div class="break-page">
-    <p class="need-break"></p>
+    <p class="need-break">...</p>
     <!-- more pagination elements -->
   </div>
   <!-- more pages -->
@@ -57,7 +59,7 @@ onMounted(() => {
 <template>
   <div class="container">
     <div>
-      <p></p>
+      <p>...</p>
       <!-- more pagination elements -->
     </div>
     <!-- more pages -->
@@ -97,7 +99,7 @@ usage:
 
 ```js
 const { execPaging } = html2a4tmpl()
-// execute somewhere
+// execute somewhere (Please refer to the previous section.)
 execPaging()
 ```
 
