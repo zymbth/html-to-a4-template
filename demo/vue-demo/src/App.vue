@@ -43,10 +43,10 @@ function getData() {
 }
 </script>
 <template>
-  <div id="print" class="print-container11">
-    <div class="break-page11">
-      <p v-for="p in paragraphs1" class="need-break11" v-text="p.content"></p>
-      <table class="break-table11">
+  <div id="print" class="print-container">
+    <div class="break-page">
+      <p v-for="p in paragraphs1" class="need-break" v-text="p.content"></p>
+      <table class="break-table">
         <thead>
           <tr>
             <th v-for="th in 6" width="1%">Th - {{ th }}</th>
@@ -58,7 +58,7 @@ function getData() {
           </tr>
         </tbody>
       </table>
-      <p v-for="p in paragraphs2" class="need-break11" v-text="p.content"></p>
+      <p v-for="p in paragraphs2" class="need-break" v-text="p.content"></p>
     </div>
   </div>
 </template>
