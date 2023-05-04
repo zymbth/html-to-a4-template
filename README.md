@@ -6,7 +6,6 @@ Convert web pages to A4 size for preview and printing. Automatically paginate pa
 
 > Currently, this utility use `cash-dom` to manipulate element.
 
-
 ## Installation
 
 > The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
@@ -86,7 +85,7 @@ onMounted(() => {
 
 ### Import in Browser
 
-utils & css: 
+util & css:
 
 ```html
 <head>
@@ -102,4 +101,3 @@ const { execPaging } = html2a4tmpl()
 // execute somewhere (Please refer to the previous section.)
 execPaging()
 ```
-
