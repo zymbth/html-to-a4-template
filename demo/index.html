@@ -50,6 +50,7 @@
     <div class="btns">
       <button @click="refreshComp">Refresh</button>
       <button @click="startPaging">Paging</button>
+      <button @click="execPrint">Print</button>
     </div>
   </div>
   <script type="module">
@@ -91,6 +92,9 @@
         },
         startPaging() {
           this.pagingUtil?.execPaging()
+        },
+        execPrint() {
+          window.print()
         },
         getData() {
           return new Promise((resolve, reject) => {

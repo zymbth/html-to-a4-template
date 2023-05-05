@@ -23,6 +23,8 @@ const startPaging = () => {
   if(!currComp) return
   currComp.value.execPaging()
 }
+
+const execPrint = () => window.print()
 </script>
 
 <template>
@@ -41,6 +43,7 @@ const startPaging = () => {
     <div class="btns">
       <button @click="refreshComp">Refresh</button>
       <button @click="startPaging">Paging</button>
+      <button @click="execPrint">Print</button>
     </div>
   </div>
 </template>
