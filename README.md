@@ -6,7 +6,7 @@ English | [中文](./README.zh-CN.md)
 
 Convert web pages to A4 size for preview and printing. Automatically paginate page content based on the concepts of "pages" and "pagination elements": iterate through each page, paginate recursively within each page until no further pagination is required.
 
-> Currently, this utility use `cash-dom` to manipulate element.
+> Currently, this utility use [cash-dom](https://github.com/fabiospampinato/cash) to manipulate element.
 
 ## Installation
 

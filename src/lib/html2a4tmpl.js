@@ -124,6 +124,7 @@ export default function html2a4tmpl(root) {
       // 新的页面元素添加类 new-break-page，仅作标识
       if (!currPageEl.hasClass('new-break-page')) newClass += ' new-break-page'
       new_div = $(`<div class="${newClass}" style="display:block"></div>`)
+
       // 分页情景
       // 一、表格跨页————拆分表格进下一页（new_div），包括表头、表体处理
       if ($(this).hasClass('table_break')) {
@@ -277,7 +278,7 @@ export default function html2a4tmpl(root) {
           )
         }
       })
-
+      const isFirstTr = add_dom.prev('tr').length === 0 // 是否是第一行
       // 4）常规处理：复制表格及后续元素到下一页
       table.children('tbody').append(copy_tr_dom.clone()) // copy tr
       table.children('tbody').append(add_dom.nextAll().clone()) // copy nextAll tr
@@ -285,7 +286,8 @@ export default function html2a4tmpl(root) {
       new_div.append(add_dom.parents('table').nextAll().clone()) // 复制表格后元素到下一页
       add_dom.nextAll().remove() // remove nexAll tr
       add_dom.parents('table').nextAll().remove() // 移除表格后元素
-      add_dom.remove() // 移除tr
+      if(isFirstTr) add_dom.parents('table').remove()
+      else add_dom.remove() // 移除tr
     } else {
       if (add_dom.nextAll().length) {
         // 有后序表格：拷贝表格及后续元素
