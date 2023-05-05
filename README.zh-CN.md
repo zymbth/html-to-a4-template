@@ -1,20 +1,20 @@
 # html-to-a4-template
 
-English | [中文](./README.zh-CN.md)
+[English](./README.md) | 中文
 
-## Introduction
+## 介绍
 
-Convert web pages to A4 size for preview and printing. Automatically paginate page content based on the concepts of "pages" and "pagination elements": iterate through each page, paginate recursively within each page until no further pagination is required.
+将网页转换成A4尺寸，用以预览打印。对页面内容自动分页，分页基于“页”与“分页元素”两个概念：遍历每个页，页内，递归地分页直至无需再分页。
 
-> Currently, this utility use `cash-dom` to manipulate element.
+> 当前，本工具方法使用 `cash-dom` 操作DOM元素
 
-## Installation
+## 安装
 
-> The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
+> 下面的示例基于 Vue3，但此工具方法基于js，可以用在其它框架中
 
-### Using Package Manager
+### 使用包管理器
 
-install:
+安装:
 
 ```bash
 # NPM
@@ -24,17 +24,17 @@ npm install html-to-a4-template
 yarn add html-to-a4-template
 ```
 
-usage:
+使用:
 
-1. You can manually add class of each "pages" and "pagination elements". (unidentified elements will not participate in pagination)
+1. 可以通过手动给“页”与“分页元素”添加类标识(未标识的不会参与分页中)
 
 ```vue
 <template>
   <div class="break-page">
     <p class="need-break">...</p>
-    <!-- more pagination elements -->
+    <!-- 更多“分页元素” -->
   </div>
-  <!-- more pages -->
+  <!-- 更多“页” -->
 </template>
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
@@ -54,18 +54,18 @@ onMounted(() => {
 </script>
 ```
 
-2. You can specify the root element(s), which would automatically scanned "pages" and "pagination elements" to add class
+1. 可以指定执行分页的根元素，自动扫描“页”与“分页元素”并添加类标识
 
 ```vue
 <template>
   <div class="container">
     <div>
       <p>...</p>
-      <!-- more pagination elements -->
+      <!-- 更多“分页元素” -->
     </div>
-    <!-- more pages -->
+    <!-- 更多“页” -->
   </div>
-  <!-- more containers -->
+  <!-- 更多容器 -->
 </template>
 <script setup>
 import { ref, onMounted, nextTick } from 'vue'
@@ -85,9 +85,9 @@ onMounted(() => {
 </script>
 ```
 
-### Import in Browser
+### CND引入
 
-util & css:
+引入工具方法及样式:
 
 ```html
 <head>
@@ -96,10 +96,10 @@ util & css:
 </head>
 ```
 
-usage:
+使用:
 
 ```js
 const { execPaging } = html2a4tmpl()
-// execute somewhere (Please refer to the previous section.)
+// 在某处执行 (参考上一节)
 execPaging()
 ```
