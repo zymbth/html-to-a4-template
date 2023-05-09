@@ -1,6 +1,6 @@
 {
   "name": "html-to-a4-template",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Transfer html to A4 template, which helps to ensure the print styles",
   "main": "dist/html2a4tmpl.es.js",
   "files": [
@@ -16,7 +16,8 @@
     "url": "git+https://github.com/zymbth/html-to-a4-template.git"
   },
   "keywords": [
-    "html a4",
+    "html",
+    "a4",
     "print"
   ],
   "author": "ymzhao",
@@ -26,11 +27,11 @@
   },
   "homepage": "https://github.com/zymbth/html-to-a4-template#readme",
   "dependencies": {
-    "cash-dom": "^8.1.5",
-    "vue": "^3.2.47"
+    "cash-dom": "8.1.5",
+    "vue": "3.2.47"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.1.0",
-    "vite": "^4.2.0"
+    "@vitejs/plugin-vue": "4.1.0",
+    "vite": "4.2.0"
   }
 }
