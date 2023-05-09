@@ -121,8 +121,9 @@ execPaging()
 
 ### Pagination Elements
 
-For "pagination elements", they are by default treated as indivisible units. Other special cases require pagination processing methods to be written according to the requirements.
+| type | label | strategy |
+|:-----|:-----|:----|
+| indivisible unit (default) | `.need-break` | move the element and the next all elements into next page |
+| table | `.break-table` | split at the page break, copy table header, then insert the new table and next all elements into next page |
 
-For example, for tables, the table needs to be split at the page break, the table header needs to be copied, and the new table and subsequent elements need to be inserted into the next page.
-
-More common special cases will be gradually added to this utility, and their corresponding labels will also be listed later.
+More common special cases will be gradually added to this utility
