@@ -1,6 +1,6 @@
 import $ from 'cash-dom'
 import { notHidden, mTypeof } from '@/utils/utils.js'
-import '@/styles/print.css'
+import printStyle from '@/styles/print.css'
 
 /**
  * 公共分页工具方法
@@ -27,6 +27,8 @@ import '@/styles/print.css'
  * @example see readme
  */
 export default function html2a4tmpl(root) {
+  appendPrintStyle(printStyle)
+
   // 获取浏览器1mm 像素长度
   const pixel_ratio = (function getOneMmsPx() {
     let div = document.createElement("div");
@@ -45,6 +47,18 @@ export default function html2a4tmpl(root) {
   // Object.prototype.notHidden = notHidden
   $('body').__proto__.notHidden = notHidden
 
+  function appendPrintStyle(css) {
+    if(typeof css !== 'string') {
+      console.error('print style is invalid')
+      return
+    }
+    if(document.getElementById('print-style')) return
+    const style = document.createElement('style')
+    style.id = 'print-style'
+    style.setAttribute('type', 'text/css')
+    style.innerHTML = css
+    document.head.append(style)
+  }
   
   // 执行分页
   function execPaging() {

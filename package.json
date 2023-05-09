@@ -1,6 +1,6 @@
 {
   "name": "html-to-a4-template",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Transfer html to A4 template, which helps to ensure the print styles",
   "main": "dist/html2a4tmpl.es.js",
   "files": [
