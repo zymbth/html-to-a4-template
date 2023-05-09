@@ -825,7 +825,6 @@ function Bn(t) {
     }
     if (document.getElementById("print-style"))
       return;
-    console.log("create style");
     const h = document.createElement("style");
     h.id = "print-style", h.setAttribute("type", "text/css"), h.innerHTML = f, document.head.append(h);
   }

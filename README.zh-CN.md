@@ -102,3 +102,10 @@ const { execPaging } = html2a4tmpl()
 // 在某处执行 (参考上一节)
 execPaging()
 ```
+
+## 库大小
+
+| file | size | gzip |
+|:-----|:-----|:----|
+| html2a4tmpl.es.js | 28.3 kB | 9.0 kB |
+| html2a4tmpl.umd.js | 21.8 kB | 8.2 kB |

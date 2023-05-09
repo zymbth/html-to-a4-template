@@ -102,3 +102,10 @@ const { execPaging } = html2a4tmpl()
 // execute somewhere (Please refer to the previous section.)
 execPaging()
 ```
+
+## lib size
+
+| file | size | gzip |
+|:-----|:-----|:----|
+| html2a4tmpl.es.js | 28.3 kB | 9.0 kB |
+| html2a4tmpl.umd.js | 21.8 kB | 8.2 kB |
