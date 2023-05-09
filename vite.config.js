@@ -16,10 +16,10 @@ export default defineConfig({
       formats: ['es','umd'],
       fileName: (format) => `html2a4tmpl.${format}.js`
     },
-    rollupOptions: {
-      output: {
-        assetFileNames: 'print.css'
-      }
-    }
+    // rollupOptions: {
+    //   output: {
+    //     assetFileNames: 'print.css'
+    //   }
+    // }
   }
 })
