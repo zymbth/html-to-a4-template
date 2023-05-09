@@ -8,7 +8,9 @@
 
 > 当前，本工具方法使用 [cash-dom](https://github.com/fabiospampinato/cash) 操作DOM元素
 
-库大小：
+npm包: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template)
+
+大小：
 
 | file | size | gzip |
 |:-----|:-----|:----|

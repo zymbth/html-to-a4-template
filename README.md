@@ -8,6 +8,8 @@ Convert web pages to A4 size for preview and printing. Automatically paginate pa
 
 > Currently, this utility use [cash-dom](https://github.com/fabiospampinato/cash) to manipulate element.
 
+npm package: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template)
+
 lib size:
 
 | file | size | gzip |
