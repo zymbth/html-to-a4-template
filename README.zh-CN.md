@@ -91,8 +91,7 @@ onMounted(() => {
 
 ```html
 <head>
-  <link rel="stylesheet" href="https://unpkg.com/html-to-a4-template@0.2.1/dist/print.css">
-  <script src="https://unpkg.com/html-to-a4-template@0.2.1/dist/html2a4tmpl.umd.js"></script>
+  <script src="https://unpkg.com/html-to-a4-template@0.4.0/dist/html2a4tmpl.umd.js"></script>
 </head>
 ```
 
