@@ -8,6 +8,13 @@ Convert web pages to A4 size for preview and printing. Automatically paginate pa
 
 > Currently, this utility use [cash-dom](https://github.com/fabiospampinato/cash) to manipulate element.
 
+lib size:
+
+| file | size | gzip |
+|:-----|:-----|:----|
+| html2a4tmpl.es.js | 28.3 kB | 9.0 kB |
+| html2a4tmpl.umd.js | 21.8 kB | 8.2 kB |
+
 ## Installation
 
 > The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
@@ -85,6 +92,13 @@ onMounted(() => {
 </script>
 ```
 
+The `execPaging` method takes one parameter, whose valid values include: string, element, element list, and other values are paged in the same way as the previous method.
+
+Compared with the previous method, this method can eliminate the need for manual labeling. In order to correctly perform automatic labeling, you need to understand how it is automatically labeled:
+
+- The `execPaging` method obtains the parent element(s) of the "page" based on the valid parameter passed in;
+- Traverse the parent elements obtained in the previous step and add the "page" label to their child elements. Add the corresponding "pagination element" label to the child elements' child elements
+
 ### Import in Browser
 
 utility:
@@ -103,9 +117,12 @@ const { execPaging } = html2a4tmpl()
 execPaging()
 ```
 
-## lib size
+## Other
 
-| file | size | gzip |
-|:-----|:-----|:----|
-| html2a4tmpl.es.js | 28.3 kB | 9.0 kB |
-| html2a4tmpl.umd.js | 21.8 kB | 8.2 kB |
+### Pagination Elements
+
+For "pagination elements", they are by default treated as indivisible units. Other special cases require pagination processing methods to be written according to the requirements.
+
+For example, for tables, the table needs to be split at the page break, the table header needs to be copied, and the new table and subsequent elements need to be inserted into the next page.
+
+More common special cases will be gradually added to this utility, and their corresponding labels will also be listed later.
