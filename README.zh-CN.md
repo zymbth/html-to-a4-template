@@ -14,8 +14,8 @@ npm包: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template)
 
 | file | size | gzip |
 |:-----|:-----|:----|
-| html2a4tmpl.es.js | 28.3 kB | 9.0 kB |
-| html2a4tmpl.umd.js | 21.8 kB | 8.2 kB |
+| html2a4tmpl.es.js | 28.99 kB | 9.18 kB |
+| html2a4tmpl.umd.js | 22.39 kB | 8.36 kB |
 
 ## 二、安装
 

@@ -1,6 +1,6 @@
 import $ from 'cash-dom'
 import { notHidden, mTypeof } from '@/utils/utils.js'
-import printStyle from '@/styles/print.css'
+import printStyle from '@/styles/print.css?inline'
 
 /**
  * 公共分页工具方法
@@ -20,13 +20,24 @@ import printStyle from '@/styles/print.css'
  * 
  * 表格分页单元：加上类 break-table，对跨页的表格进行拆分
  * 后续其它特殊处理的分页单元，需添加标识，在分页程序中添加对应的处理程序
+ * @param {string|Element|HTMLCollection} root 页面容器，可传入选择器、元素、元素集合
+ * @param {number} [recLimit=500] 递归限制，避免出现分页bug时死循环
+ * @param {number} [pageLimit=500] 分页限制，避免出现分页bug时死循环
  * @returns {Object} {
  *   execPaging: 执行分页（请确保页面已经渲染完毕再执行）
  * }
  * 
- * @example see readme
+ * @see https://github.com/zymbth/html-to-a4-template/blob/master/README.md
  */
-export default function html2a4tmpl(root) {
+export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
+  // 参数无效时，使用默认值
+  recLimit = isNaN(parseInt(recLimit)) ? 500 : parseInt(recLimit)
+  pageLimit = isNaN(parseInt(pageLimit)) ? 500 : parseInt(pageLimit)
+  // 参数限制，最低10
+  if(recLimit < 1) recLimit = 10
+  if(pageLimit < 1) pageLimit = 10
+
+  // 添加 print 样式
   appendPrintStyle(printStyle)
 
   // 获取浏览器1mm 像素长度
@@ -41,12 +52,13 @@ export default function html2a4tmpl(root) {
   })();
   // console.log('pixel_ratio', pixel_ratio)
 
-  // 分页程序递归限制，避免出现分页bug时死循环
-  let recursionLimit = 500
-
   // Object.prototype.notHidden = notHidden
   $('body').__proto__.notHidden = notHidden
 
+  /**
+   * 将css字符串添加到head中
+   * @param {string} css css string
+   */
   function appendPrintStyle(css) {
     if(typeof css !== 'string') {
       console.error('print style is invalid')
@@ -81,9 +93,16 @@ export default function html2a4tmpl(root) {
     console.log('start paging')
     $('table.break-table').children('thead').addClass('need-break thead_break')
     $('table.break-table tbody tr').addClass('need-break table_break');
+
+    // 分页限制，避免出现分页bug时死循环
+    let pageCount = 0
     // 依次处理break-page分页
     let pageEl = getNextPageEl()
     while(pageEl.length) {
+      if(++pageCount > pageLimit) {
+        console.error(`Pagination operation exceeds limit (${pageLimit} pages), you can change this limit in the initialization method.`)
+        break
+      }
       pageEl = getNextPageEl(pagging(pageEl))
     }
     console.log('end paging')
@@ -107,16 +126,17 @@ export default function html2a4tmpl(root) {
    * 处理break-page分页（返回自己或分页后的new-break-page元素）
    * 
    * @param {Element} currPageEl 当前页
-   * @param {number} [count] 递归计数
+   * @param {number} [recCount] 递归计数
    * @returns {Element} 分页处理后最后一页，可能是自己（未超出一页，无需分页时）
    */
-  function pagging(currPageEl, count = 0) {
-    if(--recursionLimit <= 0) {
-      throw new Error('Recursion error when breaking page')
-    }
+  function pagging(currPageEl, recCount = 0) {
     // 高度判断，超出需分页
     if (currPageEl.outerHeight() <= 294 * pixel_ratio + 5) return currPageEl
-    if(++count > 50) return currPageEl
+    // 递归限制，避免出现分页bug时死循环
+    if(++recCount > recLimit) {
+      console.error(`Pagination operation exceeds recursion limit (${recLimit} pages), you can change this limit in the initialization method.`)
+      return currPageEl
+    }
     // 准备分页
     const pageElOffsetTop = currPageEl.offset().top
     const pageElPaddingBottom = parseInt(currPageEl.css('paddingBottom'))
@@ -139,6 +159,18 @@ export default function html2a4tmpl(root) {
       if (!currPageEl.hasClass('new-break-page')) newClass += ' new-break-page'
       new_div = $(`<div class="${newClass}" style="display:block"></div>`)
 
+      // 第一个元素超出，该页固定高度，后续元素进入新页。此处有所取舍，这种状况可视作bug
+      if(index === 0) {
+        console.warn('There is an element that exceeds the page height, and the page height is fixed to avoid pagnation bug.')
+        console.log(this)
+        currPageEl.css('overflow', 'hidden')
+        currPageEl.css('height', `${294 * pixel_ratio}px`)
+        new_div.append($(this).nextAll().clone())
+        $(this).nextAll().remove()
+        currPageEl.after(new_div)
+        return false // 跳出循环
+      }
+
       // 分页情景
       // 一、表格跨页————拆分表格进下一页（new_div），包括表头、表体处理
       if ($(this).hasClass('table_break')) {
@@ -157,7 +189,7 @@ export default function html2a4tmpl(root) {
       return false
     })
     // 一次分页处理，只创建一个新页（new-break-page），新页也需分页处理（递归处理）
-    return modified ? pagging(new_div, count) : currPageEl
+    return modified ? pagging(new_div, recCount) : currPageEl
   }
 
   /**
@@ -200,6 +232,7 @@ export default function html2a4tmpl(root) {
        * 计算当前行上一行每列向下占据(包括自身)的单元格数
        * 根据上一步结果，如果有必要，调整上一行单元格的rowspan，拷贝因分页导致纵向合并到当前行而被分割的单元格，然后设置新单元格的rowspan
        */
+
       // 当前td之前的所有tr
       let prevTrs = $(this).prevAll('tr')
       // 存储当前行每列向下占据(包括自身)的单元格数
