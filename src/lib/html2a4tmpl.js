@@ -35,7 +35,7 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
   appendPrintStyle(printStyle)
 
   // 获取浏览器1mm 像素长度
-  const pixel_ratio = (function getOneMmsPx() {
+  const pixelRatio = (function getOneMmsPx() {
     let div = document.createElement("div");
     div.id = "mm";
     div.style.width = "1mm";
@@ -44,7 +44,7 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
     $('#mm').remove()
     return mm1.width;
   })();
-  // console.log('pixel_ratio', pixel_ratio)
+  // console.log('pixelRatio', pixelRatio)
 
   // Object.prototype.notHidden = notHidden
   $('body').__proto__.notHidden = notHidden
@@ -87,8 +87,8 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
     }
 
     console.log('start paging')
-    $('table.break-table').children('thead').addClass('need-break thead_break')
-    $('table.break-table tbody tr').addClass('need-break table_break');
+    $('table.break-table').children('thead').addClass('need-break thead-break')
+    $('table.break-table tbody tr').addClass('need-break table-break');
 
     $('.wrap-break').children().notHidden().addClass('need-break')
 
@@ -129,7 +129,7 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
    */
   function pagging(currPageEl, recCount = 0) {
     // 高度判断，超出需分页
-    if (currPageEl.outerHeight() <= 294 * pixel_ratio + 5) return currPageEl
+    if (currPageEl.outerHeight() <= 294 * pixelRatio + 5) return currPageEl
     // 递归限制，避免出现分页bug时死循环
     if(++recCount > recLimit) {
       console.error(`Pagination operation exceeds recursion limit (${recLimit} pages), you can change this limit in the initialization method.`)
@@ -139,7 +139,7 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
     const pageElOffsetTop = currPageEl.offset().top
     const pageElPaddingBottom = parseInt(currPageEl.css('paddingBottom'))
     let modified = false // 标记当前页是否被分割新页
-    let new_div = null
+    let newDiv = null
     // 遍历当前页的所有分页单元
     currPageEl.find('.need-break').notHidden().each(function (index, el) {
       // 超出判断：当前元素的底部距离页面顶部的距离 + 当前元素的margin-bottom > 页面高度
@@ -148,102 +148,102 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
           $(this).outerHeight() -
           pageElOffsetTop +
           parseInt($(this).css('marginBottom')) <=
-        294 * pixel_ratio - pageElPaddingBottom
+        294 * pixelRatio - pageElPaddingBottom
       ) return true // 未超出，继续下一个元素
 
       modified = true // 标记当前页已修改
       let newClass = currPageEl.attr('class')
       // 新的页面元素添加类 new-break-page，仅作标识
       if (!currPageEl.hasClass('new-break-page')) newClass += ' new-break-page'
-      new_div = $(`<div class="${newClass}" style="display:block"></div>`)
+      newDiv = $(`<div class="${newClass}" style="display:block"></div>`)
 
       // 第一个元素超出，该页固定高度，后续元素进入新页。此处有所取舍，这种状况可视作bug
       if(index === 0) {
         console.warn('There is an element that exceeds the page height, and the page height is fixed to avoid pagnation bug.')
         console.log(this)
         currPageEl.css('overflow', 'hidden')
-        currPageEl.css('height', `${294 * pixel_ratio}px`)
-        new_div.append($(this).nextAll().clone())
+        currPageEl.css('height', `${294 * pixelRatio}px`)
+        newDiv.append($(this).nextAll().clone())
         $(this).nextAll().remove()
-        currPageEl.after(new_div)
+        currPageEl.after(newDiv)
         return false // 跳出循环
       }
 
       // 分页情景
-      // 一、表格跨页————拆分表格进下一页（new_div），包括表头、表体处理
-      if ($(this).hasClass('table_break')) {
-        splitTableBody.call(this, new_div, index)
+      // 一、表格跨页————拆分表格进下一页（newDiv），包括表头、表体处理
+      if ($(this).hasClass('table-break')) {
+        splitTableBody.call(this, newDiv, index)
       }
-      // 二、表头跨页————拷贝表格本身及后续元素进下一页（new_div）
-      else if ($(this).hasClass('thead_break')) {
-        splitTableHead.call(this, new_div)
+      // 二、表头跨页————拷贝表格本身及后续元素进下一页（newDiv）
+      else if ($(this).hasClass('thead-break')) {
+        splitTableHead.call(this, newDiv)
       }
       // 三、容器跨页————类似于表格，拆分容器或移动容器至下一页
       else if ($(this).parent().hasClass('wrap-break')) {
-        splitWrapEl.call(this, new_div)
+        splitWrapEl.call(this, newDiv)
       }
-      // 四、普通跨页————拷贝元素本身及后续元素进下一页（new_div）
+      // 四、普通跨页————拷贝元素本身及后续元素进下一页（newDiv）
       else {
-        splitNormalEl.call(this, new_div)
+        splitNormalEl.call(this, newDiv)
       }
-      currPageEl.after(new_div)
+      currPageEl.after(newDiv)
       // 跳出循环（一个break-page最多分页一次）
       return false
     })
     // 一次分页处理，只创建一个新页（new-break-page），新页也需分页处理（递归处理）
-    return modified ? pagging(new_div, recCount) : currPageEl
+    return modified ? pagging(newDiv, recCount) : currPageEl
   }
 
   /**
    * 普通元素分割处理
-   * @param {Element} new_div 新页，用于存放分割后的元素
+   * @param {Element} newDiv 新页，用于存放分割后的元素
    * @returns 
    */
-  function splitNormalEl(new_div) {
-    if(!new_div || !this) return
-    new_div.append($(this).clone())
-    new_div.append($(this).nextAll().clone())
+  function splitNormalEl(newDiv) {
+    if(!newDiv || !this) return
+    newDiv.append($(this).clone())
+    newDiv.append($(this).nextAll().clone())
     $(this).nextAll().remove()
     $(this).remove()
   }
   // 容器内分割处理
-  function splitWrapEl(new_div) {
-    if(!new_div || !this) return
+  function splitWrapEl(newDiv) {
+    if(!newDiv || !this) return
     const isFst = $(this).prev().length === 0
     if(isFst) {
-      splitNormalEl.call($(this).parent(), new_div)
+      splitNormalEl.call($(this).parent(), newDiv)
     } else {
       const newWrap = $(this).parent().clone().empty()
       newWrap.append($(this).clone())
       newWrap.append($(this).nextAll().clone())
-      new_div.append(newWrap)
-      new_div.append($(this).parent().nextAll().clone())
+      newDiv.append(newWrap)
+      newDiv.append($(this).parent().nextAll().clone())
       $(this).parent().nextAll().remove()
       $(this).nextAll().remove()
       $(this).remove()
     }
   }
   // 表头分割处理
-  function splitTableHead(new_div) {
-    if(!new_div || !this) return
-    new_div.append($(this).parents('table').clone())
-    new_div.append($(this).parents('table').nextAll().clone())
+  function splitTableHead(newDiv) {
+    if(!newDiv || !this) return
+    newDiv.append($(this).parents('table').clone())
+    newDiv.append($(this).parents('table').nextAll().clone())
     $(this).parents('table').nextAll().remove()
     $(this).parents('table').remove()
   }
   // 表格(tbody)分割处理
-  function splitTableBody(new_div, index) {
+  function splitTableBody(newDiv, index) {
     // 新表格
     var table = $(`<table class="${$(this).parents('table').attr('class')}"></table>`)
     table.append('<tbody></tbody>')
-    var add_dom = $(this) // 当前行，也是跨页发生的行
+    var addDom = $(this) // 当前行，也是跨页发生的行
     // td超过一页的处理（否则，该情况下会出现无限分页bug）
     let tmpFlag = index > 1
     if (index == 1) {
-      tmpFlag = $(this).find('.need-break').notHidden().not('.thead_break').length !== 0
+      tmpFlag = $(this).find('.need-break').notHidden().not('.thead-break').length !== 0
     }
     if (tmpFlag) {
-      table.prepend(add_dom.parents('table').children('thead').clone()) // 复制表头
+      table.prepend(addDom.parents('table').children('thead').clone()) // 复制表头
 
       /**
        * 分割处理：
@@ -304,7 +304,7 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
       // N表示空(被前面行中的单元格占据)，数字表示第几列例如：
       // ['N', 'N', 'N', 'N', 'N', 'N', 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4]
       let currRCounts = rCounts.map(p => (p > 1 ? 'N' : 0))
-      add_dom.find('td').each(function (idx1) {
+      addDom.find('td').each(function (idx1) {
         const colspan = +$(this).attr('colspan') || 1
         const startIdx = currRCounts.findIndex(p => p === 0)
         for (let i = 0; i < colspan; i++) {
@@ -331,49 +331,49 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
         for (let k = 0; k < colspan; k++) currRCounts[startIdx + k] = splitTdTag
       }
       // 按顺序将原单元格，分割后的单元格插入到当前行
-      const copy_tr_dom = add_dom.clone().empty()
+      const copyTrDom = addDom.clone().empty()
       ;[...new Set(currRCounts)].forEach(p => {
         if (typeof p === 'string') {
-          copy_tr_dom.append(splitTds[p])
+          copyTrDom.append(splitTds[p])
         } else {
-          copy_tr_dom.append(
-            add_dom
+          copyTrDom.append(
+            addDom
               .find('td')
               .eq(p - 1)
               .clone()
           )
         }
       })
-      const isFirstTr = add_dom.prev('tr').length === 0 // 是否是第一行
+      const isFirstTr = addDom.prev('tr').length === 0 // 是否是第一行
       // 4）常规处理：复制表格及后续元素到下一页
-      table.children('tbody').append(copy_tr_dom.clone()) // copy tr
-      table.children('tbody').append(add_dom.nextAll().clone()) // copy nextAll tr
-      new_div.append(table) // 添加复制的表格
-      new_div.append(add_dom.parents('table').nextAll().clone()) // 复制表格后元素到下一页
-      add_dom.nextAll().remove() // remove nexAll tr
-      add_dom.parents('table').nextAll().remove() // 移除表格后元素
-      if(isFirstTr) add_dom.parents('table').remove()
-      else add_dom.remove() // 移除tr
+      table.children('tbody').append(copyTrDom.clone()) // copy tr
+      table.children('tbody').append(addDom.nextAll().clone()) // copy nextAll tr
+      newDiv.append(table) // 添加复制的表格
+      newDiv.append(addDom.parents('table').nextAll().clone()) // 复制表格后元素到下一页
+      addDom.nextAll().remove() // remove nexAll tr
+      addDom.parents('table').nextAll().remove() // 移除表格后元素
+      if(isFirstTr) addDom.parents('table').remove()
+      else addDom.remove() // 移除tr
     } else {
-      if (add_dom.nextAll().length) {
+      if (addDom.nextAll().length) {
         // 有后序表格：拷贝表格及后续元素
-        table.prepend(add_dom.parents('table').children('thead').clone())
-        table.children('tbody').append(add_dom.nextAll().clone())
-        add_dom.nextAll().remove()
-        new_div.append(table)
-        new_div.append(add_dom.parents('table').nextAll().clone())
-        add_dom.parents('table').nextAll().remove()
+        table.prepend(addDom.parents('table').children('thead').clone())
+        table.children('tbody').append(addDom.nextAll().clone())
+        addDom.nextAll().remove()
+        newDiv.append(table)
+        newDiv.append(addDom.parents('table').nextAll().clone())
+        addDom.parents('table').nextAll().remove()
       } else {
-        new_div.append(add_dom.parents('table').nextAll().clone())
-        add_dom.parents('table').nextAll().remove()
+        newDiv.append(addDom.parents('table').nextAll().clone())
+        addDom.parents('table').nextAll().remove()
       }
       // 跨页且无法分割的tr（存在占一整页的单元格，单元格是最小分割单元，无法处理）
       // 方案：为避免分页bug，移入定高容器中（内容显示不全）
-      let tmp_div = $(
-        `<div style="height:${294 * pixel_ratio - 100}px;overflow:hidden;"></div>`
+      let tmpDiv = $(
+        `<div style="height:${294 * pixelRatio - 100}px;overflow:hidden;"></div>`
       ) // 定高容器
-      add_dom.parents('.break-page').append(tmp_div)
-      tmp_div.append(add_dom.parents('table'))
+      addDom.parents('.break-page').append(tmpDiv)
+      tmpDiv.append(addDom.parents('table'))
     }
   }
 
