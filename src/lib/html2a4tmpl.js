@@ -11,12 +11,6 @@ import printStyle from '@/styles/print.css?inline'
  * 遍历页面容器元素，判断是否超出一页（A4尺寸），超出则执行分页（递归执行）
  * 页面容器，遍历所有分页单元，判断是否超出一页（A4尺寸），超出则从此处执行分页
  * 基本分页策略：将超出的元素及其所有后续元素移至下一页
- * 例如：
- * <div class="break-page">
- *  <div class="need-break">...</div>
- *  <div class="need-break">...</div>
- *  ...
- * </div>
  * 
  * 表格分页单元：加上类 break-table，对跨页的表格进行拆分
  * 后续其它特殊处理的分页单元，需添加标识，在分页程序中添加对应的处理程序
@@ -84,8 +78,10 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
         $(this).children().notHidden().each(function (_, el) {
           if(el.tagName.toLowerCase() === 'table')
             $(this).addClass('break-table')
-          else
+          else {
+            if(['wrap-break'].some(c => el.classList.contains(c))) return
             $(this).addClass('need-break')
+          }
         })
       })
     }
@@ -93,6 +89,8 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
     console.log('start paging')
     $('table.break-table').children('thead').addClass('need-break thead_break')
     $('table.break-table tbody tr').addClass('need-break table_break');
+
+    $('.wrap-break').children().notHidden().addClass('need-break')
 
     // 分页限制，避免出现分页bug时死循环
     let pageCount = 0
@@ -180,7 +178,11 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
       else if ($(this).hasClass('thead_break')) {
         splitTableHead.call(this, new_div)
       }
-      // 三、普通跨页————拷贝元素本身及后续元素进下一页（new_div）
+      // 三、容器跨页————类似于表格，拆分容器或移动容器至下一页
+      else if ($(this).parent().hasClass('wrap-break')) {
+        splitWrapEl.call(this, new_div)
+      }
+      // 四、普通跨页————拷贝元素本身及后续元素进下一页（new_div）
       else {
         splitNormalEl.call(this, new_div)
       }
@@ -203,6 +205,23 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
     new_div.append($(this).nextAll().clone())
     $(this).nextAll().remove()
     $(this).remove()
+  }
+  // 容器内分割处理
+  function splitWrapEl(new_div) {
+    if(!new_div || !this) return
+    const isFst = $(this).prev().length === 0
+    if(isFst) {
+      splitNormalEl.call($(this).parent(), new_div)
+    } else {
+      const newWrap = $(this).parent().clone().empty()
+      newWrap.append($(this).clone())
+      newWrap.append($(this).nextAll().clone())
+      new_div.append(newWrap)
+      new_div.append($(this).parent().nextAll().clone())
+      $(this).parent().nextAll().remove()
+      $(this).nextAll().remove()
+      $(this).remove()
+    }
   }
   // 表头分割处理
   function splitTableHead(new_div) {

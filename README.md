@@ -35,7 +35,7 @@ yarn add html-to-a4-template
 
 usage:
 
-1. You can manually add class of each "pages" and "pagination elements". (unidentified elements will not participate in pagination)
+1) You can manually add class of each "pages" and "pagination elements". (unidentified elements will not participate in pagination)
 
 ```vue
 <template>
@@ -63,7 +63,7 @@ onMounted(() => {
 </script>
 ```
 
-2. You can specify the root element(s), which would automatically scanned "pages" and "pagination elements" to add class
+2) You can specify the root element(s), which would automatically scanned "pages" and "pagination elements" to add class
 
 ```vue
 <template>
@@ -94,12 +94,15 @@ onMounted(() => {
 </script>
 ```
 
-The `execPaging` method takes one parameter, whose valid values include: string, element, element list, and other values are paged in the same way as the previous method.
+The `execPaging` method takes one parameter, whose valid values include: string, element, element list (HTMLCollection), and other values are paged in the same way as the previous method.
 
 Compared with the previous method, this method can eliminate the need for manual labeling. In order to correctly perform automatic labeling, you need to understand how it is automatically labeled:
 
 - The `execPaging` method obtains the parent element(s) of the "page" based on the valid parameter passed in;
 - Traverse the parent elements obtained in the previous step and add the "page" label to their child elements. Add the corresponding "pagination element" label to the child elements' child elements
+
+3) Mixing the use of two methods
+You can manually mark "pages" and "pagination elements", and specify automatic marking within a specific container. The only difference between the two is in the marking stage.
 
 ### Import in Browser
 
@@ -127,5 +130,6 @@ execPaging()
 |:-----|:-----|:----|
 | indivisible unit (default) | `.need-break` | move the element and the next all elements into next page |
 | table | `.break-table` | split at the page break, copy table header, then insert the new table and next all elements into next page |
+| wrap | `.wrap-break` | Similar to table, if the first element within a container spans across pages, it will be split from the container. Otherwise, it will be split from within the container, and the excess elements will be moved to a newly cloned container and inserted into the next page. |
 
 More common special cases will be gradually added to this utility
