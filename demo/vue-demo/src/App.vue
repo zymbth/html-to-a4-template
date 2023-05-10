@@ -58,7 +58,9 @@ function getData() {
           </tr>
         </tbody>
       </table>
-      <p v-for="p in paragraphs2" class="need-break" v-text="p.content"></p>
+      <div class="wrap-break">
+        <p v-for="p in paragraphs2" v-text="p.content"></p>
+      </div>
     </div>
   </div>
 </template>
