@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "html-to-a4-template": "0.5.1",
+    "html-to-a4-template": "0.6.4",
     "vue": "^3.2.47"
   },
   "devDependencies": {

@@ -14,8 +14,8 @@ lib size:
 
 | file | size | gzip |
 |:-----|:-----|:----|
-| html2a4tmpl.es.js | 29.66 kB | 9.29 kB |
-| html2a4tmpl.umd.js | 22.92 kB | 8.47 kB |
+| /dist/html2a4tmpl.es.js | 29.66 kB | 9.29 kB |
+| /dist/html2a4tmpl.umd.js | 22.92 kB | 8.47 kB |
 
 ## Installation
 
@@ -110,7 +110,7 @@ utility:
 
 ```html
 <head>
-  <script src="https://unpkg.com/html-to-a4-template@0.4.0/dist/html2a4tmpl.umd.js"></script>
+  <script src="https://unpkg.com/html-to-a4-template@0.6.4/dist/html2a4tmpl.umd.js"></script>
 </head>
 ```
 

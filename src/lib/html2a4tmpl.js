@@ -1,6 +1,6 @@
 import $ from 'cash-dom'
-import { notHidden, mTypeof } from '@/utils/utils.js'
-import printStyle from '@/styles/print.css?inline'
+import { notHidden, mTypeof } from '../utils/utils.js'
+import printStyle from '../styles/print.css?inline'
 
 /**
  * 公共分页工具方法
