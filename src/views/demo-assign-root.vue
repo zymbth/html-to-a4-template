@@ -20,7 +20,7 @@ const paragraphs2 = Array.from({ length: 6 }).map((_, idx) => {
 let execPaging = ref(null)
 
 onMounted(() => {
-  execPaging.value = html2a4tmpl(document.getElementsByClassName('container')).execPaging;
+  execPaging.value = html2a4tmpl(document.getElementsByClassName('a4-preview')).execPaging;
 
   getData().then((res) => {
     tableData.value = res
@@ -47,8 +47,8 @@ function getData() {
 </script>
 
 <template>
-  <div class="container">
-    <div>
+  <div class="a4-preview">
+    <div class="a4-page">
       <p v-for="p in paragraphs1" v-text="p.content"></p>
       <table>
         <thead>

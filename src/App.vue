@@ -2,12 +2,14 @@
 import { ref, nextTick } from 'vue'
 import assignRoot from '@/views/demo-assign-root.vue'
 import paggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
+import demoFastPrint from './views/demo-fast-print.vue';
 
-const assignRootRef = ref(), paggingSpecificElementsRef = ref()
+const assignRootRef = ref(), paggingSpecificElementsRef = ref(), demoFastPrintRef = ref()
 const currNo = ref(1)
 const views = [
   { no: 1, title: 'Assign root Element(s)', value: assignRootRef },
-  { no: 2, title: 'Pagging by specific elements', value: paggingSpecificElementsRef }
+  { no: 2, title: 'Pagging by specific elements', value: paggingSpecificElementsRef },
+  { no: 3, title: 'Fast download', value: demoFastPrintRef }
 ]
 
 const handleClick = no => currNo.value = no
@@ -21,7 +23,7 @@ const refreshComp = () => {
 const startPaging = () => {
   const currComp = views.find(p => p.no === currNo.value)?.value
   if(!currComp) return
-  currComp.value.execPaging()
+  currComp.value.execPaging?.()
 }
 
 const execPrint = () => window.print()
@@ -39,6 +41,7 @@ const execPrint = () => window.print()
     </div>
     <assignRoot ref="assignRootRef" v-if="currNo === 1" />
     <paggingSpecificElements ref="paggingSpecificElementsRef" v-else-if="currNo === 2" />
+    <demoFastPrint ref="demoFastPrintRef" v-else-if="currNo === 3" />
     <div v-else></div>
     <div class="btns">
       <button @click="refreshComp">Refresh</button>
