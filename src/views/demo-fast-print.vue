@@ -2,6 +2,9 @@
 import { ref, nextTick } from 'vue'
 import { mockParagraph } from '@/utils/mock.js'
 import html2a4tmpl from '@/lib/html2a4tmpl.js'
+import { jsPDF } from 'jspdf'
+import html2pdf from 'html2pdf.js'
+import exportWord from 'js-export-word'
 
 const fastDownloadIframe = ref()
 const docData = ref([])
@@ -32,77 +35,81 @@ const tmpl = [
   { type: 'p' },
 ]
 
+const previewRef = ref()
 function testFunc() {
   getData(tmpl).then(res => {
     docData.value = res
-    // fastDownloadIframe.value.src = './test.html'
-    fastDownloadIframe.value.srcdoc = `
-      <!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Fast Download Page</title>
-        </head>
-        <body>
-          <div id="iframe-page">Hello!</div>
-        </body>
-        <style>
-          html,body {margin:0}
-        </style>
-      </html>`
-    const iframeWindow = fastDownloadIframe.value.contentWindow
-    console.log('iframeWindow: ', iframeWindow, iframeWindow.name)
-    // const scriptElement = iframeWindow.document.createElement('script')
-    // scriptElement.src = './test.js'
-    // scriptElement.innerHTML = 'console.log("this", this);';
-    // iframeWindow.document.body.appendChild(scriptElement)
-    setTimeout(() => {
-      const rootEl = iframeWindow.document.getElementById('iframe-page')
-      console.log(rootEl)
-      generatePageByData(rootEl)
-      nextTick(() => {
-
-        html2a4tmpl.call(iframeWindow,rootEl).execPaging?.()
-      })
-    }, 300)
+    nextTick(() => {
+      html2a4tmpl().execPaging()
+      const hideFrame = document.createElement('iframe')
+      hideFrame.name = 'print-iframe'
+      hideFrame.onload = handleIframeLoaded
+      // hideFrame.style.display = 'none' // 隐藏 iframe
+      hideFrame.style.display = 'block'
+      hideFrame.style.height = '700px'
+      hideFrame.style.width = '1100px'
+      hideFrame.src = '/demo.html'
+      document.body.appendChild(hideFrame)
+    })
   })
 }
+function handleIframeLoaded() {
+  console.log('iframeLoaded', this.contentWindow.name, this.contentWindow)
+  // console.log(previewRef.value)
+  // console.log(this.contentWindow.document.body)
+  const element = previewRef.value
+  const target = this.contentWindow.document.body
+  target.innerHTML = ''
+  if (element) {
+    const clone = element.cloneNode(true)
+    target.appendChild(clone)
+  }
+  // const closePrint = () => {
+  //   document.body.removeChild(this)
+  // }
+  // this.contentWindow.onbeforeunload = closePrint
+  // this.contentWindow.onafterprint = closePrint
+  setTimeout(() => {
+    console.log('xxxxxxxxxxxxx')
+    // this.contentWindow.print()
 
-function generatePageByData(root) {
-  root.innteHTML = ''
-  const pageEl = document.createElement('div')
-  root.appendChild(pageEl)
-  docData.value.forEach(({ type, cnt }) => {
-    switch (type) {
-      case 'p':
-        const pEl = document.createElement('p')
-        // pEl.className = 'need-break'
-        pEl.innerText = cnt
-        pageEl.appendChild(pEl)
-        break
-      case 'table':
-        const cols = Object.keys(cnt[0]).length
-        const tbEl = document.createElement('table')
-        // tbEl.className = 'need-break'
-        tbEl.innteHTML = `
-          <thead>
-            <tr>${Array.from({ length: cols }).map((_, idx) => `<th>TH - ${idx + 1}</th>`).join('')}</tr>
-          </thead>
-          <tbody>
-            ${cnt.map((row, rIdx) => {
-              return `<tr>${Object.entries(row)
-                .map(([key, val], cIdx) => `<td>${val}</td>`).join('')}</tr>`
-            }).join('')}
-          </tbody>
-        `
-        pageEl.appendChild(tbEl)
-        break
-      default:
-        break
+    // var myBlob = new Blob([new XMLSerializer().serializeToString(this.contentWindow.document)], {
+    //   type: 'text/html',
+    // })
+    // let link = document.createElement('a')
+    // link.href = URL.createObjectURL(myBlob)
+    // link.download = 'unknown-file-name'
+    // link.click()
+    // URL.revokeObjectURL(blob)
+
+    // let doc = new jsPDF()
+    // // doc.html(this.contentWindow.document, {
+    // doc.html(new XMLSerializer().serializeToString(this.contentWindow.document), {
+    //   callback: function (pdf) {
+    //     console.log('pdf: ', pdf);
+    //     pdf.save('test.pdf')
+    //   },
+    // })
+
+    // html2pdf().from(this.contentWindow.document).save()
+    // html2pdf().from(new XMLSerializer().serializeToString(this.contentWindow.document)).save()
+    // html2pdf(this.contentWindow.document)
+    // html2pdf()
+    //   .from(new XMLSerializer().serializeToString(this.contentWindow.document))
+    //   .outputPdf()
+    //   .then(res => console.log('output', res))
+
+    const wrap = this.contentWindow.document.body
+    const config = {
+      addStyle: false, // 是否导出样式，默认为true，此操作会将所有样式转换成行内样式导出
+      fileName: 'textExportWord', // 导出文件名
+      toImg: [],//['.need-to-img', '.bg-danger'], // 页面哪些部分需要转化成图片，例如echart图表之类
+      success() {
+        console.log('yyyyyyyyyyyyyyyyyyy')
+      }, // 完成之后回调，一般页面篇幅比较大，时间比较长
     }
-    return { type, cnt }
-  })
+    exportWord(wrap, config, 'word') //这里进行了改造因为要修改里面的方法将word文件流提交到后台
+  }, 1000)
 }
 
 function getData(tmpl) {
@@ -140,7 +147,35 @@ function getData(tmpl) {
     <h3>TEST</h3>
     <button @click="testFunc">Start</button>
     <hr />
-    <iframe ref="fastDownloadIframe" name="test-iframe" height="500px" width="100%"></iframe>
+    <div></div>
+    <!-- <iframe ref="fastDownloadIframe" name="test-iframe" height="500px" width="100%"></iframe> -->
+  </div>
+  <div class="print-container" ref="previewRef">
+    <div class="break-page">
+      <template v-for="item in docData">
+        <p
+          v-if="item.type === 'p'"
+          class="need-break"
+          v-text="item.cnt"
+          style="color: red;" />
+        <table v-else-if="item.type === 'table'" class="break-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Age</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in item.cnt">
+              <td>{{ row.id }}</td>
+              <td>{{ row.name }}</td>
+              <td>{{ row.age }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+    </div>
   </div>
 </template>
 <style scoped>

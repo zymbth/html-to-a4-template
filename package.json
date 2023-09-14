@@ -31,6 +31,9 @@
   "homepage": "https://github.com/zymbth/html-to-a4-template#readme",
   "dependencies": {
     "cash-dom": "8.1.5",
+    "html2pdf.js": "^0.10.1",
+    "js-export-word": "^1.0.5",
+    "jspdf": "^2.5.1",
     "vue": "3.2.47"
   },
   "devDependencies": {
