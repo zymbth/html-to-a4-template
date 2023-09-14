@@ -24,7 +24,6 @@ import printStyle from '../styles/print.css?inline'
  * @see https://github.com/zymbth/html-to-a4-template/blob/master/README.md
  */
 export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
-  console.log('this', this, window.name)
   // 参数无效时，使用默认值
   recLimit = isNaN(parseInt(recLimit)) ? 500 : parseInt(recLimit)
   pageLimit = isNaN(parseInt(pageLimit)) ? 500 : parseInt(pageLimit)
@@ -69,10 +68,9 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
   
   // 执行分页
   function execPaging() {
-    // debugger
     const rootParamType = mTypeof(root)
     let rootEl
-    if(['string','element','htmldivelement','htmlcollection'].includes(rootParamType)) rootEl = $(root)
+    if(['string','element','htmlcollection'].includes(rootParamType)) rootEl = $(root)
     if(rootEl?.length) {
       rootEl.addClass('print-container')
       rootEl.children().notHidden().each(function () {
@@ -98,11 +96,6 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
     let pageCount = 0
     // 依次处理break-page分页
     let pageEl = getNextPageEl()
-    console.log(document.querySelector('.break-page'))
-    setTimeout(() => {
-      console.log(document.querySelector('.break-page'))
-    }, 1000)
-    console.log('pageEl: ', pageEl.length);
     while(pageEl.length) {
       if(++pageCount > pageLimit) {
         console.error(`Pagination operation exceeds limit (${pageLimit} pages), you can change this limit in the initialization method.`)
@@ -135,7 +128,6 @@ export default function html2a4tmpl(root, recLimit = 500, pageLimit = 500) {
    * @returns {Element} 分页处理后最后一页，可能是自己（未超出一页，无需分页时）
    */
   function pagging(currPageEl, recCount = 0) {
-    console.log(currPageEl.outerHeight())
     // 高度判断，超出需分页
     if (currPageEl.outerHeight() <= 294 * pixelRatio + 5) return currPageEl
     // 递归限制，避免出现分页bug时死循环
