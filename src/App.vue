@@ -3,7 +3,7 @@ import { ref, nextTick } from 'vue'
 import assignRoot from '@/views/demo-assign-root.vue'
 import paggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
 // import demoFastPrint from './views/demo-fast-print.vue';
-import demoGenePDF from './views/demo-generate-pdf.vue';
+import demoGenePDF from './views/demo-generate-pdf-1.vue';
 
 const assignRootRef = ref(), paggingSpecificElementsRef = ref(), demoGenePDFRef = ref()
 const currNo = ref(1)

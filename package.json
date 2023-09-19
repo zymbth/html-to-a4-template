@@ -34,6 +34,7 @@
     "html2pdf.js": "^0.10.1",
     "js-export-word": "^1.0.5",
     "jspdf": "^2.5.1",
+    "puppeteer": "^21.2.1",
     "vue": "3.2.47"
   },
   "devDependencies": {
