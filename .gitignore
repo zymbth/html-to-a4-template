@@ -22,3 +22,6 @@ node_modules
 *.sw?
 
 *.lock
+*-lock.*
+pnpm-debug
+stats.html

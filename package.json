@@ -36,5 +36,10 @@
   "devDependencies": {
     "@vitejs/plugin-vue": "4.1.0",
     "vite": "4.2.0"
+  },
+  "packageManager": "pnpm@8.1.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.1.0"
   }
 }
