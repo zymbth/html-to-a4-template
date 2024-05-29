@@ -69,7 +69,7 @@ function getData() {
   </div>
 </template>
 <style scoped>
-.print-container:deep p {
+.print-container :deep(p) {
   text-indent: 2em;
 }
 </style>

@@ -65,9 +65,7 @@ function getData() {
   </div>
 </template>
 <style lang="scss" scoped>
-.print-container:deep {
-  p {
-    text-indent: 2em;
-  }
+.print-container :deep(p) {
+  text-indent: 2em;
 }
 </style>
