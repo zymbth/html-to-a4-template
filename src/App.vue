@@ -2,17 +2,15 @@
 import { ref, nextTick } from 'vue'
 import assignRoot from '@/views/demo-assign-root.vue'
 import paggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
-import { useI18n } from './vue-i18n'
-
-const { t } = useI18n()
+import langComp from './components/lang.vue'
 
 const assignRootRef = ref(),
   paggingSpecificElementsRef = ref()
 const currNo = ref(1)
-const views = [
-  { no: 1, title: t('menu.pagingViaRoot'), value: assignRootRef },
-  { no: 2, title: t('menu.pagingViaSpecificEl'), value: paggingSpecificElementsRef },
-]
+const views = ref([
+  { no: 1, title: 'menu.pagingViaRoot', value: assignRootRef },
+  { no: 2, title: 'menu.pagingViaSpecificEl', value: paggingSpecificElementsRef },
+])
 
 const handleClick = no => (currNo.value = no)
 
@@ -23,7 +21,7 @@ const refreshComp = () => {
 }
 
 const startPaging = () => {
-  const currComp = views.find(p => p.no === currNo.value)?.value
+  const currComp = views.value.find(p => p.no === currNo.value)?.value
   if (!currComp) return
   currComp.value.execPaging()
 }
@@ -39,16 +37,17 @@ const execPrint = () => window.print()
         v-for="view in views"
         :key="view.no"
         @click="handleClick(view.no)"
-        >{{ view.title }}</span
+        >{{ $t(view.title) }}</span
       >
+      <langComp class="lang" />
     </div>
     <assignRoot ref="assignRootRef" v-if="currNo === 1" />
     <paggingSpecificElements ref="paggingSpecificElementsRef" v-else-if="currNo === 2" />
     <div v-else></div>
     <div class="btns">
-      <button @click="refreshComp">Refresh</button>
-      <button @click="startPaging">Paging</button>
-      <button @click="execPrint">Print</button>
+      <button @click="refreshComp">{{ $t('menu.refresh') }}</button>
+      <button @click="startPaging">{{ $t('menu.paging') }}</button>
+      <button @click="execPrint">{{ $t('menu.print') }}</button>
     </div>
   </div>
 </template>
@@ -68,6 +67,10 @@ const execPrint = () => window.print()
 }
 .view + .view {
   margin-left: 10px;
+}
+.lang {
+  float: right;
+  color: #333;
 }
 .btns {
   position: fixed;
