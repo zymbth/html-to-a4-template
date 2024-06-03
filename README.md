@@ -17,7 +17,7 @@ lib size:
 | /dist/html2a4tmpl.es.js | 29.66 kB | 9.29 kB |
 | /dist/html2a4tmpl.umd.js | 22.92 kB | 8.47 kB |
 
-## Installation
+## Installation and Usage
 
 > The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
 
@@ -31,6 +31,9 @@ npm install html-to-a4-template
 
 # Yarn 
 yarn add html-to-a4-template
+
+# PNPM
+pnpm add html-to-a4-template
 ```
 
 usage:

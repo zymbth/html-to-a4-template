@@ -1,53 +1,54 @@
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted } from 'vue'
 import { mockParagraph } from '@/utils/mock.js'
 import html2a4tmpl from '@/lib/html2a4tmpl.js'
+
+let execPaging = ref(null)
+const containerRef = ref()
+
+onMounted(() => {
+  execPaging.value = html2a4tmpl(containerRef.value, 'auto').execPaging
+
+  getData().then(res => {
+    tableData.value = res
+  })
+})
 
 const tableData = ref([])
 const paragraphs1 = Array.from({ length: 5 }).map((_, idx) => {
   return {
     id: idx + 1,
-    content: mockParagraph()
+    content: mockParagraph(),
   }
 })
 const paragraphs2 = Array.from({ length: 6 }).map((_, idx) => {
   return {
     id: idx + 1,
-    content: mockParagraph()
+    content: mockParagraph(),
   }
 })
-
-let execPaging = ref(null)
-
-onMounted(() => {
-  execPaging.value = html2a4tmpl(document.getElementsByClassName('container')).execPaging;
-
-  getData().then((res) => {
-    tableData.value = res
-    // nextTick(() => {
-    //   execPaging()
-    // })
-  })
-})
-defineExpose({ execPaging })
 
 function getData() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(Array.from({ length: 100 }).map((_, idx) => {
-        return {
-          id: idx + 1,
-          name: `Name ${idx}`,
-          age: Math.floor(Math.random() * 100)
-        }
-      }))
-    }, 300);
+      resolve(
+        Array.from({ length: 100 }).map((_, idx) => {
+          return {
+            id: idx + 1,
+            name: `Name ${idx}`,
+            age: Math.floor(Math.random() * 100),
+          }
+        })
+      )
+    }, 300)
   })
 }
+
+defineExpose({ execPaging })
 </script>
 
 <template>
-  <div class="container">
+  <div ref="containerRef">
     <div>
       <p v-for="p in paragraphs1" v-text="p.content"></p>
       <table>
@@ -57,8 +58,8 @@ function getData() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row,rIdx) in tableData">
-            <td v-for="(td,cIdx) in 6">Td - {{ rIdx }} - {{ cIdx }}</td>
+          <tr v-for="(row, rIdx) in tableData">
+            <td v-for="(td, cIdx) in 6">Td - {{ rIdx }} - {{ cIdx }}</td>
           </tr>
         </tbody>
       </table>

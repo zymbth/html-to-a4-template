@@ -3,6 +3,16 @@ import { ref, onMounted } from 'vue'
 import { mockParagraph } from '@/utils/mock.js'
 import html2a4tmpl from '@/lib/html2a4tmpl.js'
 
+let execPaging = ref(null)
+
+onMounted(() => {
+  execPaging.value = html2a4tmpl('.container').execPaging
+
+  getData().then(res => {
+    tableData.value = res
+  })
+})
+
 const tableData = ref([])
 const paragraphs1 = Array.from({ length: 5 }).map((_, idx) => {
   return {
@@ -10,17 +20,6 @@ const paragraphs1 = Array.from({ length: 5 }).map((_, idx) => {
     content: mockParagraph(),
   }
 })
-
-let execPaging = ref(null)
-
-onMounted(() => {
-  execPaging.value = html2a4tmpl(document.getElementsByClassName('container')).execPaging
-
-  getData().then(res => {
-    tableData.value = res
-  })
-})
-defineExpose({ execPaging })
 
 function getData() {
   return new Promise((resolve, reject) => {
@@ -37,6 +36,8 @@ function getData() {
     }, 300)
   })
 }
+
+defineExpose({ execPaging })
 </script>
 
 <template>

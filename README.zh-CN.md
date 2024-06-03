@@ -17,9 +17,9 @@ npm包: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template)
 | /dist/html2a4tmpl.es.js | 29.66 kB | 9.29 kB |
 | /dist/html2a4tmpl.umd.js | 22.92 kB | 8.47 kB |
 
-## 二、安装
+## 二、安装及使用
 
-> 下面的示例基于 Vue3，但此工具方法基于js，可以用在其它框架中
+> 下面的示例基于 Vue3，但此工具方法基于js，不限使用框架
 
 ### 1. 使用包管理器
 
@@ -31,6 +31,9 @@ npm install html-to-a4-template
 
 # Yarn 
 yarn add html-to-a4-template
+
+# PNPM
+pnpm add html-to-a4-template
 ```
 
 使用:
@@ -108,7 +111,7 @@ onMounted(() => {
 
 你完全可以既手动标记“页”与“分页元素”，又指定在特定容器内进行自动标记。两者的区别只在标记阶段
 
-### 2. CND引入
+### 2. CDN引入
 
 引入工具方法:
 

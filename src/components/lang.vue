@@ -49,6 +49,7 @@ const debounceChangePopVisi = debounce(visi => (popVisi.value = visi), 200)
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.16s ease;
+  z-index: 1001;
 }
 .lang-list.inactive {
   visibility: hidden;
