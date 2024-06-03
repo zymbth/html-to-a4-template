@@ -3,6 +3,7 @@
   "menu": {
     "pagingViaRoot": "Assign root Element(s)",
     "pagingViaSpecificEl": "Pagging by specific elements",
+    "splitRowspanTd": "Split Rowspan TD Cell",
     "refresh": "Refresh",
     "paging": "Paging",
     "print": "Print"
