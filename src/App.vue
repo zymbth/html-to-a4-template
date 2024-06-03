@@ -4,12 +4,10 @@ import AssignRoot from '@/views/demo-assign-root.vue'
 import PaggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
 import langComp from './components/lang.vue'
 
-const assignRootRef = ref(),
-  paggingSpecificElementsRef = ref()
 const currNo = ref(1)
 const views = ref([
-  { no: 1, title: 'menu.pagingViaRoot', value: assignRootRef },
-  { no: 2, title: 'menu.pagingViaSpecificEl', value: paggingSpecificElementsRef },
+  { no: 1, title: 'menu.pagingViaRoot' },
+  { no: 2, title: 'menu.pagingViaSpecificEl' },
 ])
 
 const handleClick = no => (currNo.value = no)
@@ -20,10 +18,9 @@ const refreshComp = () => {
   nextTick(() => (currNo.value = tmp))
 }
 
+const testRef = ref(null)
 const startPaging = () => {
-  const currComp = views.value.find(p => p.no === currNo.value)?.value
-  if (!currComp) return
-  currComp.execPaging()
+  testRef.value?.execPaging()
 }
 
 const execPrint = () => window.print()
@@ -41,9 +38,7 @@ const execPrint = () => window.print()
       >
       <langComp class="lang" />
     </div>
-    <AssignRoot ref="assignRootRef" v-if="currNo === 1" />
-    <PaggingSpecificElements ref="paggingSpecificElementsRef" v-else-if="currNo === 2" />
-    <div v-else></div>
+    <component ref="testRef" :is="currNo === 1 ? AssignRoot : PaggingSpecificElements" />
     <div class="btns">
       <button @click="refreshComp">{{ $t('menu.refresh') }}</button>
       <button @click="startPaging">{{ $t('menu.paging') }}</button>
