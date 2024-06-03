@@ -1,22 +1,11 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { debounce } from '../utils/utils'
 
-const { locale } = useI18n()
+const { locale, availableLocales } = useI18n()
 
 const popVisi = ref(false)
-const list = ref([
-  { title: '简体中文', value: 'zh-CN' },
-  { title: 'English', value: 'en' },
-])
-watch(
-  locale,
-  val => {
-    list.value.forEach(item => (item.active = item.value === val))
-  },
-  { immediate: true }
-)
 const debounceChangePopVisi = debounce(visi => (popVisi.value = visi), 200)
 </script>
 <template>
@@ -30,12 +19,11 @@ const debounceChangePopVisi = debounce(visi => (popVisi.value = visi), 200)
     </svg>
     <div class="lang-list" :class="{ inactive: !popVisi }">
       <div
-        v-for="item in list"
-        :key="item.value"
-        @click="locale = item.value"
-        :class="{ active: item.active }">
-        {{ item.title }}
-      </div>
+        v-for="l in availableLocales"
+        :key="l"
+        @click="locale = l"
+        :class="{ active: locale === l }"
+        v-t="{ path: 'langTxt', locale: l }" />
     </div>
   </div>
 </template>

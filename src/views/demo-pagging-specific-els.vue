@@ -17,7 +17,7 @@ const paragraphs2 = Array.from({ length: 6 }).map((_, idx) => {
   }
 })
 
-let execPaging = ref(null)
+const execPaging = ref(null)
 
 onMounted(() => {
   execPaging.value = html2a4tmpl().execPaging;

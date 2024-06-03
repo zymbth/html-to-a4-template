@@ -1,4 +1,4 @@
-import en from './en.js'
-import zhCN from './zh-CN.js'
+import en from './en.json'
+import zhCN from './zh-CN.json'
 
 export { en, zhCN }

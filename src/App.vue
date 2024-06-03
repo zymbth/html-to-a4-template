@@ -1,7 +1,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
-import assignRoot from '@/views/demo-assign-root.vue'
-import paggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
+import AssignRoot from '@/views/demo-assign-root.vue'
+import PaggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
 import langComp from './components/lang.vue'
 
 const assignRootRef = ref(),
@@ -23,7 +23,7 @@ const refreshComp = () => {
 const startPaging = () => {
   const currComp = views.value.find(p => p.no === currNo.value)?.value
   if (!currComp) return
-  currComp.value.execPaging()
+  currComp.execPaging()
 }
 
 const execPrint = () => window.print()
@@ -41,8 +41,8 @@ const execPrint = () => window.print()
       >
       <langComp class="lang" />
     </div>
-    <assignRoot ref="assignRootRef" v-if="currNo === 1" />
-    <paggingSpecificElements ref="paggingSpecificElementsRef" v-else-if="currNo === 2" />
+    <AssignRoot ref="assignRootRef" v-if="currNo === 1" />
+    <PaggingSpecificElements ref="paggingSpecificElementsRef" v-else-if="currNo === 2" />
     <div v-else></div>
     <div class="btns">
       <button @click="refreshComp">{{ $t('menu.refresh') }}</button>
