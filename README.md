@@ -42,8 +42,8 @@ usage:
 
 ```vue
 <template>
-  <div class="break-page">
-    <p class="need-break">...</p>
+  <div class="a4-page">
+    <p class="a4-unit">...</p>
     <!-- more pagination elements -->
   </div>
   <!-- more pages -->
@@ -131,8 +131,8 @@ execPaging()
 
 | type | label | strategy |
 |:-----|:-----|:----|
-| indivisible unit (default) | `.need-break` | move the element and the next all elements into next page |
-| table | `.break-table` | split at the page break, copy table header, then insert the new table and next all elements into next page |
-| wrap | `.wrap-break` | Similar to table, if the first element within a container spans across pages, it will be split from the container. Otherwise, it will be split from within the container, and the excess elements will be moved to a newly cloned container and inserted into the next page. |
+| indivisible unit (default) | `.a4-unit` | move the element and the next all elements into next page |
+| table | `.a4-table` | split at the page break, copy table header, then insert the new table and next all elements into next page |
+| wrap | `.a4-unit-wrap` | Similar to table, if the first element within a container spans across pages, it will be split from the container. Otherwise, it will be split from within the container, and the excess elements will be moved to a newly cloned container and inserted into the next page. |
 
 More common special cases will be gradually added to this utility

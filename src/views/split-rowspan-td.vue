@@ -6,7 +6,7 @@ import html2a4tmpl from '@/lib/html2a4tmpl.js'
 let execPaging = ref(null)
 
 onMounted(() => {
-  execPaging.value = html2a4tmpl('.container').execPaging
+  execPaging.value = html2a4tmpl('.container', 'manual').execPaging
 
   getData().then(res => {
     tableData.value = res
@@ -41,13 +41,13 @@ defineExpose({ execPaging })
 </script>
 
 <template>
-  <div class="print-container">
-    <div class="break-page">
+  <div class="a4-container">
+    <div class="a4-page">
       <div style="border: 1px solid gray; padding: 10px; margin: 10px 0; height: 766px">
         TEST BLOCK(height: 800px)
       </div>
-      <h3 class="need-break">Table with 6 columns</h3>
-      <table class="break-table">
+      <h3 class="a4-unit">Table with 6 columns</h3>
+      <table class="a4-table">
         <thead>
           <tr>
             <th v-for="th in 6" width="1%">Th - {{ th }}</th>
@@ -81,14 +81,14 @@ defineExpose({ execPaging })
           </tr>
         </tbody>
       </table>
-      <div class="wrap-break">
+      <div class="a4-unit-wrap">
         <p v-for="p in paragraphs1" v-text="p.content"></p>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-.print-container :deep(p) {
+.a4-container :deep(p) {
   text-indent: 2em;
 }
 .highlight-td {

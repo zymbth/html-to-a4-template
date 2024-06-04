@@ -1,14 +1,14 @@
 <script setup>
 import { ref, nextTick, computed } from 'vue'
-import AssignRoot from '@/views/demo-assign-root.vue'
-import PaggingSpecificElements from '@/views/demo-pagging-specific-els.vue'
-import SplitRowspanTDCell from '@/views/demo-split-rowspan-td.vue'
+import AutoModeComp from '@/views/auto-mode.vue'
+import ManualModeComp from '@/views/manual-mode.vue'
+import SplitRowspanTDCell from '@/views/split-rowspan-td.vue'
 import langComp from './components/lang.vue'
 
 const currNo = ref(1)
 const views = ref([
-  { no: 1, title: 'menu.pagingViaRoot' },
-  { no: 2, title: 'menu.pagingViaSpecificEl' },
+  { no: 1, title: 'menu.autoMode' },
+  { no: 2, title: 'menu.manualMode' },
   { no: 3, title: 'menu.splitRowspanTd' },
 ])
 
@@ -23,9 +23,9 @@ const refreshComp = () => {
 const currView = computed(() => {
   switch (currNo.value) {
     case 1:
-      return AssignRoot
+      return AutoModeComp
     case 2:
-      return PaggingSpecificElements
+      return ManualModeComp
     case 3:
       return SplitRowspanTDCell
     default:

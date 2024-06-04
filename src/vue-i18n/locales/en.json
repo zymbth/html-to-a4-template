@@ -1,9 +1,9 @@
 {
   "langTxt": "English",
   "menu": {
-    "pagingViaRoot": "Assign root Element(s)",
-    "pagingViaSpecificEl": "Pagging by specific elements",
-    "splitRowspanTd": "Split Rowspan TD Cell",
+    "autoMode": "Paging via mode 'auto'",
+    "manualMode": "Pagging via mode 'manual'",
+    "splitRowspanTd": "Split table cell with rowspan",
     "refresh": "Refresh",
     "paging": "Paging",
     "print": "Print"

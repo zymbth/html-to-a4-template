@@ -5,17 +5,17 @@ import printStyle from '../styles/print.css?inline'
 /**
  * 公共分页工具方法
  *
- * 页面容器：class="break-page"
- * 分页单元：class="need-break"，必须是页面容器的子元素，不可嵌套
+ * 页面容器：class="a4-page"
+ * 分页单元：class="a4-unit"
  *
  * 遍历页面容器元素，判断是否超出一页（A4尺寸），超出则执行分页（递归执行）
  * 页面容器，遍历所有分页单元，判断是否超出一页（A4尺寸），超出则从此处执行分页
  * 基本分页策略：将超出的元素及其所有后续元素移至下一页
  *
- * 表格分页单元：加上类 break-table，对跨页的表格进行拆分
+ * 表格分页单元：加上类 a4-table，对跨页的表格进行拆分
  * 后续其它特殊处理的分页单元，需添加标识，在分页程序中添加对应的处理程序
  * @param {string|Element|HTMLCollection} root 页面容器，可传入选择器、元素、元素集合
- * @param {string} [mode='manual'] [manual|auto] manual: 手动设置页容器和分页单元; auto: 指定root为页面根元素，自动将其所有子元素设置为分页容器，所有孙子元素设置为分页单元
+ * @param {string} [mode='auto'] [manual|auto] manual: 手动设置页容器和分页单元; auto: 指定root为页面根元素，自动将其所有子元素设置为分页容器，所有孙子元素设置为分页单元
  * @param {number} [recLimit=500] 递归限制，避免出现分页bug时死循环
  * @param {number} [pageLimit=500] 分页限制，避免出现分页bug时死循环
  * @returns {Object} {
@@ -25,8 +25,8 @@ import printStyle from '../styles/print.css?inline'
  * @see https://github.com/zymbth/html-to-a4-template/blob/master/README.md
  */
 export default function html2a4tmpl(
-  root = 'print-container',
-  mode = 'manual',
+  root = 'a4-container',
+  mode = 'auto',
   recLimit = 500,
   pageLimit = 500
 ) {
@@ -41,10 +41,10 @@ export default function html2a4tmpl(
   if (recLimit < 10) recLimit = 10
   if (pageLimit < 10) pageLimit = 10
 
-  if (!root) root = '.print-container'
+  if (!root) root = '.a4-container'
   if (!['manual', 'auto'].includes(mode)) {
     // throw new Error('Invalid mode')
-    mode = 'manual'
+    mode = 'auto'
   }
 
   // 添加 print 样式
@@ -62,11 +62,11 @@ export default function html2a4tmpl(
     dealRoot(root, mode)
     dealSpecialEls()
 
-    console.log('start paging:', { mode, root: root || '.print-container' })
+    console.log('start paging:', { mode, root: root || '.a4-container' })
 
     // 分页限制，避免出现分页bug时死循环
     let pageCount = 0
-    // 依次处理break-page分页
+    // 依次处理a4-page分页
     let pageEl = getNextPageEl()
     while (pageEl.length) {
       if (++pageCount > pageLimit) {
@@ -82,7 +82,7 @@ export default function html2a4tmpl(
 
   /**
    * 对当前页，进行分页处理
-   * 处理break-page分页（返回自己或分页后的new-break-page元素）
+   * 处理a4-page分页（返回自己或分页后的new-a4-page元素）
    *
    * @param {Element} currPageEl 当前页
    * @param {number} [recCount] 递归计数
@@ -105,7 +105,7 @@ export default function html2a4tmpl(
     let newDiv = null
     // 遍历当前页的所有分页单元
     currPageEl
-      .find('.need-break')
+      .find('.a4-unit')
       .notHidden()
       .each(function (index, el) {
         // 超出判断：当前元素的底部距离页面顶部的距离 + 当前元素的margin-bottom > 页面高度
@@ -120,8 +120,8 @@ export default function html2a4tmpl(
 
         modified = true // 标记当前页已修改
         let newClass = currPageEl.attr('class')
-        // 新的页面元素添加类 new-break-page，仅作标识
-        if (!currPageEl.hasClass('new-break-page')) newClass += ' new-break-page'
+        // 新的页面元素添加类 new-a4-page，仅作标识
+        if (!currPageEl.hasClass('new-a4-page')) newClass += ' new-a4-page'
         newDiv = $(`<div class="${newClass}" style="display:block"></div>`)
 
         // 第一个元素超出，该页固定高度，后续元素进入新页。此处有所取舍，这种状况可视作bug
@@ -148,7 +148,7 @@ export default function html2a4tmpl(
           splitTableHead.call(this, newDiv)
         }
         // 三、容器跨页————类似于表格，拆分容器或移动容器至下一页
-        else if ($(this).parent().hasClass('wrap-break')) {
+        else if ($(this).parent().hasClass('a4-unit-wrap')) {
           splitWrapEl.call(this, newDiv)
         }
         // 四、普通跨页————拷贝元素本身及后续元素进下一页（newDiv）
@@ -156,10 +156,10 @@ export default function html2a4tmpl(
           splitNormalEl.call(this, newDiv)
         }
         currPageEl.after(newDiv)
-        // 跳出循环（一个break-page最多分页一次）
+        // 跳出循环（一个a4-page最多分页一次）
         return false
       })
-    // 一次分页处理，只创建一个新页（new-break-page），新页也需分页处理（递归处理）
+    // 一次分页处理，只创建一个新页（new-a4-page），新页也需分页处理（递归处理）
     return modified ? pagging(newDiv, recCount) : currPageEl
   }
 
@@ -216,20 +216,20 @@ function dealRoot(root, mode) {
   if (['string', 'element', 'htmlcollection'].includes(rootParamType)) rootEl = $(root)
   else console.warn('Unexpected root type:', rootParamType)
   if (rootEl?.length) {
-    rootEl.addClass('print-container')
+    rootEl.addClass('a4-container')
     rootEl
       .children()
       .notHidden()
       .each(function () {
-        $(this).addClass('break-page')
+        $(this).addClass('a4-page')
         $(this)
           .children()
           .notHidden()
           .each(function (_, el) {
-            if (el.tagName.toLowerCase() === 'table') $(this).addClass('break-table')
+            if (el.tagName.toLowerCase() === 'table') $(this).addClass('a4-table')
             else {
-              if (['wrap-break'].some(c => el.classList.contains(c))) return
-              $(this).addClass('need-break')
+              if (['a4-unit-wrap'].some(c => el.classList.contains(c))) return
+              $(this).addClass('a4-unit')
             }
           })
       })
@@ -239,26 +239,26 @@ function dealRoot(root, mode) {
 /**
  * 其它特殊类分页前的处理
  *
- * 1) break-table: 为表头(thead)、表格行(tbody>tr)添加分页单元标记
- * 2) wrap-break: 子元素添加分页单元标记
+ * 1) a4-table: 为表头(thead)、表格行(tbody>tr)添加分页单元标记
+ * 2) a4-unit-wrap: 子元素添加分页单元标记
  */
 function dealSpecialEls() {
-  $('table.break-table').children('thead').addClass('need-break thead-break')
-  $('table.break-table tbody tr').addClass('need-break table-break')
-  $('.wrap-break').children().notHidden().addClass('need-break')
+  $('table.a4-table').children('thead').addClass('a4-unit thead-break')
+  $('table.a4-table tbody tr').addClass('a4-unit table-break')
+  $('.a4-unit-wrap').children().notHidden().addClass('a4-unit')
 }
 
 /**
- * 获取下一个break-page
+ * 获取下一个a4-page
  *
  * @param {Element} [pageEl] 当前页，为空时取第一页
  * @returns {Element} 下一页
  */
 function getNextPageEl(pageEl) {
   if (!pageEl) {
-    return $('.break-page').notHidden().first()
+    return $('.a4-page').notHidden().first()
   } else {
-    return pageEl.nextAll('.break-page').notHidden().first()
+    return pageEl.nextAll('.a4-page').notHidden().first()
   }
 }
 
@@ -309,7 +309,7 @@ function splitTableBody(newDiv, index) {
   // td超过一页的处理（否则，该情况下会出现无限分页bug）
   let tmpFlag = index > 1
   if (index == 1) {
-    tmpFlag = $(this).find('.need-break').notHidden().not('.thead-break').length !== 0
+    tmpFlag = $(this).find('.a4-unit').notHidden().not('.thead-break').length !== 0
   }
   if (tmpFlag) {
     table.prepend(addDom.parents('table').children('thead').clone()) // 复制表头
@@ -439,7 +439,7 @@ function splitTableBody(newDiv, index) {
     // 跨页且无法分割的tr（存在占一整页的单元格，单元格是最小分割单元，无法处理）
     // 方案：为避免分页bug，移入定高容器中（内容显示不全）
     let tmpDiv = $(`<div style="height:${294 * pixelRatio - 100}px;overflow:hidden;"></div>`) // 定高容器
-    addDom.parents('.break-page').append(tmpDiv)
+    addDom.parents('.a4-page').append(tmpDiv)
     tmpDiv.append(addDom.parents('table'))
   }
 }

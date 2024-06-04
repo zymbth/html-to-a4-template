@@ -1,8 +1,8 @@
 {
   "langTxt": "中文",
   "menu": {
-    "pagingViaRoot": "通过根节点分页",
-    "pagingViaSpecificEl": "通过指定元素分页",
+    "autoMode": "自动分页",
+    "manualMode": "手动设置分页",
     "splitRowspanTd": "分割纵向合并的单元格",
     "refresh": "刷新",
     "paging": "分页",

@@ -3,11 +3,10 @@ import { ref, onMounted } from 'vue'
 import { mockParagraph } from '@/utils/mock.js'
 import html2a4tmpl from '@/lib/html2a4tmpl.js'
 
-let execPaging = ref(null)
-const containerRef = ref()
+const execPaging = ref(null)
 
 onMounted(() => {
-  execPaging.value = html2a4tmpl(containerRef.value, 'auto').execPaging
+  execPaging.value = html2a4tmpl('.a4-container', 'manual').execPaging
 
   getData().then(res => {
     tableData.value = res
@@ -48,10 +47,10 @@ defineExpose({ execPaging })
 </script>
 
 <template>
-  <div ref="containerRef">
-    <div>
-      <p v-for="p in paragraphs1" v-text="p.content"></p>
-      <table>
+  <div class="a4-container">
+    <div class="a4-page">
+      <p v-for="p in paragraphs1" class="a4-unit" v-text="p.content"></p>
+      <table class="a4-table">
         <thead>
           <tr>
             <th v-for="th in 6" width="1%">Th - {{ th }}</th>
@@ -63,14 +62,14 @@ defineExpose({ execPaging })
           </tr>
         </tbody>
       </table>
-      <div class="wrap-break">
+      <div class="a4-unit-wrap">
         <p v-for="p in paragraphs2" v-text="p.content"></p>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
-.print-container :deep(p) {
+.a4-container :deep(p) {
   text-indent: 2em;
 }
 </style>
