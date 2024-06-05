@@ -4,7 +4,7 @@ English | [中文](./README.zh-CN.md)
 
 ## Introduction
 
-Convert web pages to A4 size for preview and printing. Automatically paginate page content based on the concepts of "pages" and "pagination elements": iterate through each page, paginate recursively within each page until no further pagination is required.
+Convert web pages to A4 size for preview and printing.
 
 > Currently, this utility use [cash-dom](https://github.com/fabiospampinato/cash) to manipulate element.
 
@@ -12,100 +12,86 @@ npm package: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-temp
 
 lib size:
 
-| file | size | gzip |
-|:-----|:-----|:----|
-| /dist/html2a4tmpl.es.js | 29.66 kB | 9.29 kB |
-| /dist/html2a4tmpl.umd.js | 22.92 kB | 8.47 kB |
+| file                     | size     | gzip    |
+| :----------------------- | :------- | :------ |
+| /dist/html2a4tmpl.es.js  | 29.58 kB | 9.34 kB |
+| /dist/html2a4tmpl.umd.js | 23.00 kB | 8.54 kB |
 
-## Installation and Usage
+### Design and implementation
 
-> The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
+The content of the webpage is too rich. In order to convert the webpage into the A4 template, the idea is as follows:
+
+- First of all
+  The size of A4 paper is: `210mm * 294mm`. Put a web page with uncertain height into a container (`A4-Container`) equal to A4 paper.
+- The browser's printing program
+  Tf you don't care about the output style, or you don't need to set the paging position, or you do not need to set the page header and footer. The browser's printing program is enough.
+  The browser printing program's print output results of the webpage may rigidly cut the coherent content (table, picture, etc.).
+  Expecting implementation: Mark the coherent content to display in the same page; mark "start another page"; the table across the page automatically paged and copy the thead, etc.
+- page(`A4-PAGE`) and paging unit(`A4-Unit`)
+  At the beginning of design, all the children in the container were regarded as the paging unit. Traverse them in order, and create a new page when cross page, and then move the rest into the new page to recursively execute paging program.
+  In order to achieve the REQs mentioned above, the "page" is introduced, the container's children were regarded as page, which is the collection of the paging unit.
+- The purpose of this tool is to convert the webpage into the webpage with A4 template. Yes, it is still webpage.
+- Finally, you can simply preview, or invoke the browser printing program to print it. You can also obtain the webpage and styles, then send to back-end to generate PDF file via plugins like [puppeteer](https://github.com/puppeteer/puppeteer).
+
+### `window.print`
+
+Print or export to pdf via browser printing program.
+
+**Note**: In preview, the `a4-page` has the style of the `margin`, `box-shadow`, etc., and the `height` is not fixed. When printing, preview's styles were removed via media query and fixed the page height.
+
+```css
+.a4-container {
+  /* ... */
+  width: 210mm;
+}
+.a4-page {
+  /* ... */
+  box-shadow: 0 0 8px 4px #ccc;
+  margin-top: 20px;
+  page-break-after: always;
+  min-height: 294mm;
+}
+.a4-page:first-child {
+  margin-top: 30px;
+}
+.a4-page:last-child {
+  page-break-after: unset;
+  margin-bottom: 20px;
+}
+
+@media print {
+  .a4-container {
+    width: 100% !important;
+  }
+  .a4-container .a4-page {
+    box-shadow: none;
+    margin: 0;
+    max-height: 294mm;
+  }
+  .a4-page:first-child {margin-top:0}
+
+  @page {
+    size: a4;
+    padding: 0;
+    margin: 0;
+  }
+}
+```
+
+## Installation
 
 ### Using Package Manager
-
-install:
 
 ```bash
 # NPM
 npm install html-to-a4-template
 
-# Yarn 
+# Yarn
 yarn add html-to-a4-template
 
 # PNPM
 pnpm add html-to-a4-template
 ```
-
-usage:
-
-1) You can manually add class of each "pages" and "pagination elements". (unidentified elements will not participate in pagination)
-
-```vue
-<template>
-  <div class="a4-page">
-    <p class="a4-unit">...</p>
-    <!-- more pagination elements -->
-  </div>
-  <!-- more pages -->
-</template>
-<script setup>
-import { ref, onMounted, nextTick } from 'vue'
-import html2a4tmpl from 'html-to-a4-template'
-import { getData } from 'your-api.js'
-
-onMounted(() => {
-  const { execPaging } = html2a4tmpl()
-
-  getData().then((res) => {
-    // render page by api response
-    nextTick(() => {
-      execPaging()
-    })
-  })
-})
-</script>
-```
-
-2) You can specify the root element(s), which would automatically scanned "pages" and "pagination elements" to add class
-
-```vue
-<template>
-  <div class="container">
-    <div>
-      <p>...</p>
-      <!-- more pagination elements -->
-    </div>
-    <!-- more pages -->
-  </div>
-  <!-- more containers -->
-</template>
-<script setup>
-import { ref, onMounted, nextTick } from 'vue'
-import html2a4tmpl from 'html-to-a4-template'
-import { getData } from 'your-api.js'
-
-onMounted(() => {
-  const { execPaging } = html2a4tmpl(document.getElementsByClassName('container'))
-
-  getData().then((res) => {
-    // render page by api response
-    nextTick(() => {
-      execPaging()
-    })
-  })
-})
-</script>
-```
-
-The `execPaging` method takes one parameter, whose valid values include: string, element, element list (HTMLCollection), and other values are paged in the same way as the previous method.
-
-Compared with the previous method, this method can eliminate the need for manual labeling. In order to correctly perform automatic labeling, you need to understand how it is automatically labeled:
-
-- The `execPaging` method obtains the parent element(s) of the "page" based on the valid parameter passed in;
-- Traverse the parent elements obtained in the previous step and add the "page" label to their child elements. Add the corresponding "pagination element" label to the child elements' child elements
-
-3) Mixing the use of two methods
-You can manually mark "pages" and "pagination elements", and specify automatic marking within a specific container. The only difference between the two is in the marking stage.
 
 ### Import in Browser
 
@@ -121,18 +107,101 @@ usage:
 
 ```js
 const { execPaging } = html2a4tmpl()
-// execute somewhere (Please refer to the previous section.)
+// execute somewhere (Please refer to the next section.)
 execPaging()
 ```
 
-## Other
+## Usage
 
-### Pagination Elements
+> The usage example below is based on Vue3, but this plugin is a js-based utility method that can be used in other frameworks.
+
+### Paging Unit
 
 | type | label | strategy |
-|:-----|:-----|:----|
+| :--- | :--- | :--- |
 | indivisible unit (default) | `.a4-unit` | move the element and the next all elements into next page |
-| table | `.a4-table` | split at the page break, copy table header, then insert the new table and next all elements into next page |
-| wrap | `.a4-unit-wrap` | Similar to table, if the first element within a container spans across pages, it will be split from the container. Otherwise, it will be split from within the container, and the excess elements will be moved to a newly cloned container and inserted into the next page. |
+| table | `.a4-table` | split at the page break, copy table header, then append the new table and next all elements into next page |
+| unit-wrap | `.a4-unit-wrap` | It's a set of units, which has the similar split strategy as table. If the first child of a unit-wrap cross page, the unit-wrap overall will be moved to next page. Otherwise, it will be split, and the excess children will be moved to a newly cloned unit-wrap, which will be appended to the next page. |
 
-More common special cases will be gradually added to this utility
+If necessary, more common special cases will be added.
+
+### Paging program
+
+The `execPaging` method takes several parameters, the first parameter is the a4 container, whose valid values include: string(as css selector), element, element list (HTMLCollection).
+
+### Usage Demo
+
+1. Auto paging
+
+Automatically mark "page" and "paging unit" in a4 container(s)
+
+```vue
+<template>
+  <div class="container">
+    <div>
+      <p>...</p>
+      <!-- more a4 paging unit -->
+    </div>
+    <!-- more a4 page -->
+  </div>
+  <!-- more a4 container -->
+</template>
+<script setup>
+import { ref, onMounted, nextTick } from 'vue'
+import html2a4tmpl from 'html-to-a4-template'
+import { getData } from 'your-api.js'
+
+onMounted(() => {
+  const { execPaging } = html2a4tmpl('.container', 'auto')
+
+  getData().then(res => {
+    // render page by api response
+    nextTick(() => {
+      execPaging()
+    })
+  })
+})
+</script>
+```
+
+When using 'auto' mode, in order to correctly perform automatic marking, you need to understand how it is automatically marked:
+
+- The `execPaging` method obtains the a4 container(s) based on the valid parameter passed in;
+- Traverse the above containers and mark their child elements as the "page". Add mark the grandchild elements as "paging unit".
+
+3. Manual paging
+
+You can manually mark each "pages" and "paging units". (Unmarked elements will not participate in pagination, which might lead to paging bugs.)
+
+```vue
+<template>
+  <div class="container">
+    <div class="a4-page">
+      <p class="a4-unit">...</p>
+      <!-- more paging units -->
+    </div>
+    <!-- more pages -->
+  </div>
+  <!-- more containers -->
+</template>
+<script setup>
+import { ref, onMounted, nextTick } from 'vue'
+import html2a4tmpl from 'html-to-a4-template'
+import { getData } from 'your-api.js'
+
+onMounted(() => {
+  const { execPaging } = html2a4tmpl('.container')
+
+  getData().then(res => {
+    // render page by api response
+    nextTick(() => {
+      execPaging()
+    })
+  })
+})
+</script>
+```
+
+3. Mixing the usage of two mode
+
+The difference between the two is only in the marking stage.
