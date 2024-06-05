@@ -9,12 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "html-to-a4-template": "0.6.4",
+    "html-to-a4-template": "0.7.1",
     "vue": "^3.2.47"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.1.0",
-    "sass": "^1.62.0",
     "vite": "^4.2.0"
   }
 }

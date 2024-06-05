@@ -4,28 +4,53 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <script src="https://unpkg.com/vue@3.2.37"></script>
     <script src="https://unpkg.com/html-to-a4-template@0.7.1/dist/html2a4tmpl.umd.js"></script>
-    <title>Demo - Mode 'auto' | Html to A4 Template</title>
+    <title>Demo - Split rowspan td cell | Html to A4 Template</title>
   </head>
 
   <body>
     <div id="app">
-      <div class="container">
-        <div>
-          <p v-for="p in paragraphs1" v-text="p.content"></p>
-          <table>
+      <div class="a4-container">
+        <div class="a4-page">
+          <div style="border: 1px solid gray; padding: 10px; margin: 10px 0; height: 766px">
+            TEST BLOCK(height: 800px)
+          </div>
+          <h3 class="a4-unit">Table with 6 columns</h3>
+          <table class="a4-table">
             <thead>
               <tr>
                 <th v-for="th in 6" width="1%">Th - {{ th }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(row,rIdx) in tableData">
-                <td v-for="(td,cIdx) in 6">Td - {{ rIdx }} - {{ cIdx }}</td>
+              <tr v-for="_ in 3">
+                <td v-for="__ in 6">-</td>
+              </tr>
+              <!-- Start: merge cells -->
+              <tr>
+                <td>-</td>
+                <td rowspan="5" colspan="3" class="highlight-td">Test Cell 1</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>-</td>
+                <td rowspan="5" class="highlight-td">Test Cell 2</td>
+                <td>-</td>
+              </tr>
+              <tr v-for="_ in 3">
+                <td v-for="_ in 2">-</td>
+              </tr>
+              <tr>
+                <td v-for="_ in 5">-</td>
+              </tr>
+              <!-- End: merge cells -->
+              <tr v-for="_ in 8">
+                <td v-for="__ in 6">-</td>
               </tr>
             </tbody>
           </table>
           <div class="a4-unit-wrap">
-            <p v-for="p in paragraphs2" v-text="p.content"></p>
+            <p v-for="p in paragraphs1" v-text="p.content"></p>
           </div>
         </div>
       </div>
@@ -41,7 +66,6 @@
           return {
             tableData: [],
             paragraphs1: [],
-            paragraphs2: [],
             pagingUtil: undefined,
           }
         },
@@ -52,15 +76,9 @@
               content: this.mockParagraph(),
             }
           })
-          this.paragraphs2 = Array.from({ length: 6 }).map((_, idx) => {
-            return {
-              id: idx + 1,
-              content: this.mockParagraph(),
-            }
-          })
         },
         mounted() {
-          this.pagingUtil = html2a4tmpl('.container')
+          this.pagingUtil = html2a4tmpl(null, 'manual')
           this.getData().then(res => {
             this.tableData = res
             // this.$nextTick(() => {
@@ -122,6 +140,9 @@
       }
       h1 {
         text-align: center;
+      }
+      .highlight-td {
+        background-color: aqua;
       }
       .btns {
         position: fixed;

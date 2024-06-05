@@ -6,7 +6,7 @@ import html2a4tmpl from '@/lib/html2a4tmpl.js'
 let execPaging = ref(null)
 
 onMounted(() => {
-  execPaging.value = html2a4tmpl('.container', 'manual').execPaging
+  execPaging.value = html2a4tmpl(null, 'manual').execPaging
 
   getData().then(res => {
     tableData.value = res
