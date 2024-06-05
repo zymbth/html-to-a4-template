@@ -107,7 +107,7 @@ usage:
 
 ```js
 const { execPaging } = html2a4tmpl()
-// execute somewhere (Please refer to the next section.)
+// execute somewhere (Please ensure the webpage has been rendered before invoke `execPaging`)
 execPaging()
 ```
 
@@ -127,7 +127,22 @@ If necessary, more common special cases will be added.
 
 ### Paging program
 
-The `execPaging` method takes several parameters, the first parameter is the a4 container, whose valid values include: string(as css selector), element, element list (HTMLCollection).
+```js
+/**
+ * Util of convert html to a4 template
+ *
+ * @param {string|Element|HTMLCollection} root specify root element. Valid inputs: string(css selector), element(s)
+ * @param {string} [mode='auto'] [manual|auto] manually/automatically mark page and page unit
+ * @param {number} [recLimit=500] recursion limitation，avoid infinite loop when encounter paging bugs
+ * @param {number} [pageLimit=500] paging limitation，avoid infinite loop when encounter paging bugs
+ * @returns {Object} {
+ *   execPaging: execute paging program (Please ensure the webpage has been rendered before invoke `execPaging`)
+ * }
+ */
+function html2a4tmpl(root = 'a4-container', mode = 'auto', recLimit = 500, pageLimit = 500) {
+  // ...
+}
+```
 
 ### Usage Demo
 
