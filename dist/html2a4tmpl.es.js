@@ -870,7 +870,7 @@ function Rn(t, n) {
       if (a.tagName.toLowerCase() === "table")
         s(this).addClass("a4-table");
       else {
-        if (["a4-unit-wrap"].some((c) => a.classList.contains(c)))
+        if (["a4-unit", "a4-unit-wrap"].some((c) => a.classList.contains(c)))
           return;
         s(this).addClass("a4-unit");
       }

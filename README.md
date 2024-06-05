@@ -14,8 +14,8 @@ lib size:
 
 | file                     | size     | gzip    |
 | :----------------------- | :------- | :------ |
-| /dist/html2a4tmpl.es.js  | 29.58 kB | 9.34 kB |
-| /dist/html2a4tmpl.umd.js | 23.00 kB | 8.54 kB |
+| /dist/html2a4tmpl.es.js  | 29.60 kB | 9.34 kB |
+| /dist/html2a4tmpl.umd.js | 23.01 kB | 8.54 kB |
 
 ### Design and implementation
 

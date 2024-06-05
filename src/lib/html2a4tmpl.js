@@ -228,7 +228,7 @@ function dealRoot(root, mode) {
           .each(function (_, el) {
             if (el.tagName.toLowerCase() === 'table') $(this).addClass('a4-table')
             else {
-              if (['a4-unit-wrap'].some(c => el.classList.contains(c))) return
+              if (['a4-unit', 'a4-unit-wrap'].some(c => el.classList.contains(c))) return
               $(this).addClass('a4-unit')
             }
           })
