@@ -33,11 +33,15 @@ The browser printing program's print output results of the webpage may rigidly c
 
 Expecting implementation: Mark the coherent content to display in the same page; mark "start another page"; the table across the page automatically paged and copy the thead, etc.
 
-- page(`A4-PAGE`) and paging unit(`A4-Unit`)
+- **page**(`A4-PAGE`) and **paging unit**(`A4-Unit`)
 
 At the beginning of design, all the children in the container were regarded as the paging unit. Traverse them in order, and create a new page when cross page, and then move the rest into the new page to recursively execute paging program.
 
 In order to achieve the REQs mentioned above, the "page" is introduced, the container's children were regarded as page, which is the collection of the paging unit.
+
+![paging](/doc/paging.png)
+
+If you want to treat the container's children as paging unit, please append a page to contain them.
 
 - The purpose of this tool is to convert the webpage into the webpage with A4 template. Yes, it is still webpage.
 - Finally, you can simply preview, or invoke the browser printing program to print it. You can also obtain the webpage and styles, then send to back-end to generate PDF file via plugins like [puppeteer](https://github.com/puppeteer/puppeteer).
