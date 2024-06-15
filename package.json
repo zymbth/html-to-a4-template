@@ -1,6 +1,6 @@
 {
   "name": "html-to-a4-template",
-  "version": "0.7.2",
+  "version": "0.7.4",
   "description": "Convert html to A4 template, which helps to preview and ensure the print styles",
   "main": "src/lib/html2a4tmpl.js",
   "files": [

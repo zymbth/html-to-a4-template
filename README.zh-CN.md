@@ -7,8 +7,11 @@
 本工具用于将网页转换成 A4 尺寸，用以预览、打印。
 
 > 当前，本工具方法使用 [cash-dom](https://github.com/fabiospampinato/cash) 操作 DOM 元素
+>
 > [项目源码](https://github.com/zymbth/html-to-a4-template)
+>
 > [Git Page](https://zymbth.github.io/html-to-a4-template/)
+>
 > [Online Demo](https://codepen.io/zymbth/pen/rNgpMdm)
 
 npm 包: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template)

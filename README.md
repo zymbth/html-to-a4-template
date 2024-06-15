@@ -7,8 +7,11 @@ English | [中文](./README.zh-CN.md)
 Convert web pages to A4 size for preview and printing.
 
 > Currently, this utility use [cash-dom](https://github.com/fabiospampinato/cash) to manipulate element.
+>
 > [Github](https://github.com/zymbth/html-to-a4-template)
+>
 > [Git Page](https://zymbth.github.io/html-to-a4-template/)
+>
 > [Online Demo](https://codepen.io/zymbth/pen/rNgpMdm)
 
 npm package: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template)
