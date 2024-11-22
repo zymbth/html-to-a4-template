@@ -1,12 +1,6 @@
-export function isHidden(element) {
+export function isHidden(element: HTMLElement): boolean {
   const style = window.getComputedStyle(element)
   return style.display === 'none' || Number.parseInt(style.height) === 0
-}
-
-export function notHidden() {
-  return this.filter((_, el) => {
-    return !isHidden(el)
-  })
 }
 
 /**
@@ -15,7 +9,7 @@ export function notHidden() {
  * @param {any} value
  * @returns
  */
-export function mTypeof(value) {
+export function mTypeof(value: any): string {
   return value instanceof Element
     ? 'element'
     : Object.prototype.toString
@@ -24,7 +18,7 @@ export function mTypeof(value) {
       .toLowerCase()
 }
 
-export function debounce(fn, delay = 300) {
+export function debounce(fn: Fn, delay: number = 300): Fn {
   let timer
   return (...args) => {
     if (timer) clearTimeout(timer)

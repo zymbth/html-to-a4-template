@@ -1,6 +1,6 @@
 import $ from 'cash-dom'
 import printStyle from '../styles/print.css?inline'
-import { mTypeof, notHidden } from '../utils/utils.js'
+import { isHidden, mTypeof } from '../utils/utils.ts'
 
 /**
  * 公共分页工具方法
@@ -56,7 +56,12 @@ export default function html2a4tmpl(
 
   // 补充 cash-dom 缺失的 hidde 方法
   // $('body').__proto__.notHidden = notHidden
-  $.fn.notHidden = notHidden
+  // $.fn.notHidden = notHidden
+  $.fn.notHidden = function () {
+    return this.filter((_, el) => {
+      return !isHidden(el)
+    })
+  }
 
   // 执行分页
   function execPaging() {
