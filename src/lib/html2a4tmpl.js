@@ -1,6 +1,6 @@
 import $ from 'cash-dom'
-import { notHidden, mTypeof } from '../utils/utils.js'
 import printStyle from '../styles/print.css?inline'
+import { mTypeof, notHidden } from '../utils/utils.js'
 
 /**
  * 公共分页工具方法
@@ -15,10 +15,10 @@ import printStyle from '../styles/print.css?inline'
  * 表格分页单元：加上类 a4-table，对跨页的表格进行拆分
  * 后续其它特殊处理的分页单元，需添加标识，在分页程序中添加对应的处理程序
  * @param {string|Element|HTMLCollection} root 页面容器，可传入选择器、元素、元素集合
- * @param {string} [mode='auto'] [manual|auto] manual: 手动设置页容器和分页单元; auto: 指定root为页面根元素，自动将其所有子元素设置为分页容器，所有孙子元素设置为分页单元
- * @param {number} [recLimit=500] 递归限制，避免出现分页bug时死循环
- * @param {number} [pageLimit=500] 分页限制，避免出现分页bug时死循环
- * @returns {Object} {
+ * @param {string} [mode] [manual|auto] manual: 手动设置页容器和分页单元; auto: 指定root为页面根元素，自动将其所有子元素设置为分页容器，所有孙子元素设置为分页单元
+ * @param {number} [recLimit] 递归限制，避免出现分页bug时死循环
+ * @param {number} [pageLimit] 分页限制，避免出现分页bug时死循环
+ * @returns {object} {
  *   execPaging: 执行分页（请确保页面已经渲染完毕再执行）
  * }
  *
@@ -36,8 +36,8 @@ export default function html2a4tmpl(
    * 1) recLimit、pageLimit: 无效时，使用默认值500; 最低为10
    * 2) root: 存在有效值时，必须是有效的选择器
    */
-  recLimit = isNaN(parseInt(recLimit)) ? 500 : parseInt(recLimit)
-  pageLimit = isNaN(parseInt(pageLimit)) ? 500 : parseInt(pageLimit)
+  recLimit = Number.isNaN(Number.parseInt(recLimit)) ? 500 : Number.parseInt(recLimit)
+  pageLimit = Number.isNaN(Number.parseInt(pageLimit)) ? 500 : Number.parseInt(pageLimit)
   if (recLimit < 10) recLimit = 10
   if (pageLimit < 10) pageLimit = 10
 
@@ -55,7 +55,8 @@ export default function html2a4tmpl(
   // console.log('pixelRatio', pixelRatio)
 
   // 补充 cash-dom 缺失的 hidde 方法
-  $('body').__proto__.notHidden = notHidden
+  // $('body').__proto__.notHidden = notHidden
+  $.fn.notHidden = notHidden
 
   // 执行分页
   function execPaging() {
@@ -100,23 +101,24 @@ export default function html2a4tmpl(
     }
     // 准备分页
     const pageElOffsetTop = currPageEl.offset().top
-    const pageElPaddingBottom = parseInt(currPageEl.css('paddingBottom'))
+    const pageElPaddingBottom = Number.parseInt(currPageEl.css('paddingBottom'))
     let modified = false // 标记当前页是否被分割新页
     let newDiv = null
     // 遍历当前页的所有分页单元
     currPageEl
       .find('.a4-unit')
       .notHidden()
-      .each(function (index, el) {
+      .each(function (index, _el) {
         // 超出判断：当前元素的底部距离页面顶部的距离 + 当前元素的margin-bottom > 页面高度
         if (
-          $(this).offset().top +
-            $(this).outerHeight() -
-            pageElOffsetTop +
-            parseInt($(this).css('marginBottom')) <=
-          294 * pixelRatio - pageElPaddingBottom
-        )
-          return true // 未超出，继续下一个元素
+          $(this).offset().top
+          + $(this).outerHeight()
+          - pageElOffsetTop
+          + Number.parseInt($(this).css('marginBottom'))
+          <= 294 * pixelRatio - pageElPaddingBottom
+        ) {
+          return true
+        } // 未超出，继续下一个元素
 
         modified = true // 标记当前页已修改
         let newClass = currPageEl.attr('class')
@@ -139,20 +141,17 @@ export default function html2a4tmpl(
         }
 
         // 分页情景
-        // 一、表格跨页————拆分表格进下一页（newDiv），包括表头、表体处理
         if ($(this).hasClass('table-break')) {
-          splitTableBody.call(this, newDiv, index)
-        }
-        // 二、表头跨页————拷贝表格本身及后续元素进下一页（newDiv）
-        else if ($(this).hasClass('thead-break')) {
+          // 一、表格跨页————拆分表格进下一页（newDiv），包括表头、表体处理
+          splitTableBody.call(this, newDiv, index, pixelRatio)
+        } else if ($(this).hasClass('thead-break')) {
+          // 二、表头跨页————拷贝表格本身及后续元素进下一页（newDiv）
           splitTableHead.call(this, newDiv)
-        }
-        // 三、容器跨页————类似于表格，拆分容器或移动容器至下一页
-        else if ($(this).parent().hasClass('a4-unit-wrap')) {
+        } else if ($(this).parent().hasClass('a4-unit-wrap')) {
+          // 三、容器跨页————类似于表格，拆分容器或移动容器至下一页
           splitWrapEl.call(this, newDiv)
-        }
-        // 四、普通跨页————拷贝元素本身及后续元素进下一页（newDiv）
-        else {
+        } else {
+          // 四、普通跨页————拷贝元素本身及后续元素进下一页（newDiv）
           splitNormalEl.call(this, newDiv)
         }
         currPageEl.after(newDiv)
@@ -192,7 +191,7 @@ function getOneMmsPx() {
   div.id = 'mm'
   div.style.width = '1mm'
   document.querySelector('body').appendChild(div)
-  let mm1 = document.getElementById('mm').getBoundingClientRect()
+  const mm1 = document.getElementById('mm').getBoundingClientRect()
   $('#mm').remove()
   return mm1.width
 }
@@ -226,8 +225,9 @@ function dealRoot(root, mode) {
           .children()
           .notHidden()
           .each(function (_, el) {
-            if (el.tagName.toLowerCase() === 'table') $(this).addClass('a4-table')
-            else {
+            if (el.tagName.toLowerCase() === 'table') {
+              $(this).addClass('a4-table')
+            } else {
               if (['a4-unit', 'a4-unit-wrap'].some(c => el.classList.contains(c))) return
               $(this).addClass('a4-unit')
             }
@@ -301,11 +301,11 @@ function splitTableHead(newDiv) {
   $(this).parents('table').remove()
 }
 // 表格(tbody)分割处理，需绑定this为当前页元素
-function splitTableBody(newDiv, index) {
+function splitTableBody(newDiv, index, pixelRatio) {
   // 新表格
-  var table = $(`<table class="${$(this).parents('table').attr('class')}"></table>`)
+  const table = $(`<table class="${$(this).parents('table').attr('class')}"></table>`)
   table.append('<tbody></tbody>')
-  var addDom = $(this) // 当前行，也是跨页发生的行
+  const addDom = $(this) // 当前行，也是跨页发生的行
   // td超过一页的处理（否则，该情况下会出现无限分页bug）
   let tmpFlag = index > 1
   if (index == 1) {
@@ -322,7 +322,7 @@ function splitTableBody(newDiv, index) {
      */
 
     // 当前td之前的所有tr
-    let prevTrs = $(this).prevAll('tr')
+    const prevTrs = $(this).prevAll('tr')
     // 存储当前行每列向下占据(包括自身)的单元格数
     let rCounts = []
     /**
@@ -331,7 +331,7 @@ function splitTableBody(newDiv, index) {
      * [undefined, undefined, [14,0,18,2], undefined, undefined]
      * 最新的纵向合并单元格是自当前行倒数第15行第1列，rowspan为18，colspan为2
      */
-    let rCells = []
+    const rCells = []
     // 1）从表格第一行开始，逐行遍历，计算每列的合并单元格数
     for (let i = prevTrs.length - 1; i >= 0; i--) {
       // 当前行
@@ -346,7 +346,7 @@ function splitTableBody(newDiv, index) {
         let cols = 0
         for (let j = 0, len = curTds.length; j < len; j++)
           cols += +$(curTds[j]).attr('colspan') || 1
-        rCounts = new Array(cols).fill(0)
+        rCounts = Array.from({ length: cols }).fill(0)
       }
       // 遍历当前行的所有td，计算每列需要向下占据(包括自身)的单元格数（包括本行）
       for (let j = 0, len1 = curTds.length; j < len1; j++) {
@@ -356,7 +356,7 @@ function splitTableBody(newDiv, index) {
         // 如果当前td的colspan大于1，需要计算每列的合并单元格数（向下占据(包括自身)的格数一致）
         if (colspan > 0) {
           // 找到当前td的起始列下标（区分td在当前行内的下标与表格行中的实际列数），插入占格数到rCounts
-          let startIdx = rCounts.findIndex(p => p < 1)
+          const startIdx = rCounts.findIndex(p => p < 1)
           // td横向合并涵盖的列，都需要加上rowspan
           for (let k = 0; k < colspan; k++) {
             rCounts[startIdx + k] = (rCounts[startIdx + k] || 0) + rowspan
@@ -372,7 +372,7 @@ function splitTableBody(newDiv, index) {
     // 2）当前行每列向下占据(包括自身)的单元格数。rCounts最终保存的是上一行的
     // N表示空(被前面行中的单元格占据)，数字表示第几列例如：
     // ['N', 'N', 'N', 'N', 'N', 'N', 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4]
-    let currRCounts = rCounts.map(p => (p > 1 ? 'N' : 0))
+    const currRCounts = rCounts.map(p => (p > 1 ? 'N' : 0))
     addDom.find('td').each(function (idx1) {
       const colspan = +$(this).attr('colspan') || 1
       const startIdx = currRCounts.findIndex(p => p === 0)
@@ -392,16 +392,16 @@ function splitTableBody(newDiv, index) {
       const prevTd = $(prevTrs[i]).find('td')[j] // 待分割处理单元格
       $(prevTd).attr('rowspan', rowspan - splitTdRs) // 修改原单元格的rowspan
       const splitTd = $(prevTd).clone().attr('rowspan', splitTdRs) // 生成新的单元格
-      const splitTdTag = 'splitTd' + x // 生成新的单元格的标识
+      const splitTdTag = `splitTd${x}` // 生成新的单元格的标识
       splitTds[splitTdTag] = splitTd // 存储新的单元格
-      let startIdx = currRCounts.findIndex(p => p === 'N') // 找到当前行的空位
+      const startIdx = currRCounts.findIndex(p => p === 'N') // 找到当前行的空位
       if (startIdx === -1) continue // 跳过：当前行没有空位，不需要插入分割的单元格
       // currRCounts中填充空位
       for (let k = 0; k < colspan; k++) currRCounts[startIdx + k] = splitTdTag
     }
     // 按顺序将原单元格，分割后的单元格插入到当前行
     const copyTrDom = addDom.clone().empty()
-    ;[...new Set(currRCounts)].forEach(p => {
+    ;[...new Set(currRCounts)].forEach((p) => {
       if (typeof p === 'string') {
         copyTrDom.append(splitTds[p])
       } else {
@@ -438,7 +438,7 @@ function splitTableBody(newDiv, index) {
     }
     // 跨页且无法分割的tr（存在占一整页的单元格，单元格是最小分割单元，无法处理）
     // 方案：为避免分页bug，移入定高容器中（内容显示不全）
-    let tmpDiv = $(`<div style="height:${294 * pixelRatio - 100}px;overflow:hidden;"></div>`) // 定高容器
+    const tmpDiv = $(`<div style="height:${294 * pixelRatio - 100}px;overflow:hidden;"></div>`) // 定高容器
     addDom.parents('.a4-page').append(tmpDiv)
     tmpDiv.append(addDom.parents('table'))
   }

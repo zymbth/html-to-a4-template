@@ -45,7 +45,6 @@ export default antfu({
     '.config',
     '.vscode',
     'plop',
-    '.husky',
-    'src/lib'
+    '.husky'
   ],
 })
