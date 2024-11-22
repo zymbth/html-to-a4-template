@@ -31,8 +31,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint \"./src/**/*.{js,ts,vue,html}\"",
-    "lint:fix": "eslint \"./src/**/*.{js,ts,vue,html}\" --fix"
+    "lint": "eslint \"**/*.{js,ts,vue,html}\"",
+    "lint:fix": "eslint \"**/*.{js,ts,vue,html}\" --fix"
   },
   "dependencies": {
     "cash-dom": "8.1.5",

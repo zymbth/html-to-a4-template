@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
+import * as path from 'node:path'
 import vue from '@vitejs/plugin-vue'
-import * as path from 'path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
   plugins: [vue()],
@@ -13,8 +13,8 @@ export default defineConfig({
     lib: {
       entry: 'src/lib/html2a4tmpl.js',
       name: 'html2a4tmpl',
-      formats: ['es','umd'],
-      fileName: (format) => `html2a4tmpl.${format}.js`
+      formats: ['es', 'umd'],
+      fileName: format => `html2a4tmpl.${format}.js`
     }
   }
 })

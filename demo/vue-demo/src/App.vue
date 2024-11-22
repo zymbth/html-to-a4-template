@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue'
-import { mockParagraph } from './utils/mock.js'
 import html2a4tmpl from 'html-to-a4-template'
+import { onMounted, ref } from 'vue'
+import { mockParagraph } from './utils/mock.js'
 
 const containerRef = ref()
 const execPaging = ref()
@@ -9,7 +9,7 @@ const execPaging = ref()
 onMounted(() => {
   execPaging.value = html2a4tmpl(containerRef.value).execPaging
 
-  getData().then(res => {
+  getData().then((res) => {
     tableData.value = res
   })
 })
@@ -29,7 +29,7 @@ const paragraphs2 = Array.from({ length: 6 }).map((_, idx) => {
 })
 
 function getData() {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve(
         Array.from({ length: 100 }).map((_, idx) => {
@@ -48,42 +48,55 @@ const startPaging = () => execPaging.value?.()
 const execPrint = () => window.print()
 const refreshComp = () => location.reload()
 </script>
+
 <template>
   <div>
     <div ref="containerRef">
       <div>
-        <p v-for="p in paragraphs1" v-text="p.content"></p>
+        <p v-for="(p, index) in paragraphs1" :key="index" v-text="p.content" />
         <table>
           <thead>
             <tr>
-              <th v-for="th in 6" width="1%">Th - {{ th }}</th>
+              <th v-for="th in 6" :key="th" width="1%">
+                Th - {{ th }}
+              </th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, rIdx) in tableData">
-              <td v-for="(td, cIdx) in 6">Td - {{ rIdx }} - {{ cIdx }}</td>
+            <tr v-for="(row, rIdx) in tableData" :key="rIdx">
+              <td v-for="(td, cIdx) in 6" :key="cIdx">
+                Td - {{ rIdx }} - {{ cIdx }}
+              </td>
             </tr>
           </tbody>
         </table>
         <div class="a4-unit-wrap">
-          <p v-for="p in paragraphs2" v-text="p.content"></p>
+          <p v-for="(p, index) in paragraphs2" :key="index" v-text="p.content" />
         </div>
       </div>
     </div>
     <div class="btns">
-      <button @click="refreshComp">Refresh</button>
-      <button @click="startPaging">Paging</button>
-      <button @click="execPrint">Print</button>
+      <button @click="refreshComp">
+        Refresh
+      </button>
+      <button @click="startPaging">
+        Paging
+      </button>
+      <button @click="execPrint">
+        Print
+      </button>
       <a href="https://github.com/zymbth/html-to-a4-template.git" target="_blank">
         <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
           <path
             d="M511.957 21.333C241.024 21.333 21.333 240.981 21.333 512c0 216.832 140.544 400.725 335.574 465.664 24.49 4.395 32.256-10.07 32.256-23.083 0-11.69.256-44.245 0-85.205-136.448 29.61-164.736-64.64-164.736-64.64-22.315-56.704-54.4-71.765-54.4-71.765-44.587-30.464 3.285-29.824 3.285-29.824 49.195 3.413 75.179 50.517 75.179 50.517 43.776 75.008 114.816 53.333 142.762 40.79 4.523-31.66 17.152-53.377 31.19-65.537-108.971-12.458-223.488-54.485-223.488-242.602 0-53.547 19.114-97.323 50.517-131.67-5.035-12.33-21.93-62.293 4.779-129.834 0 0 41.258-13.184 134.912 50.346a469.803 469.803 0 0 1 122.88-16.554c41.642.213 83.626 5.632 122.88 16.554 93.653-63.488 134.784-50.346 134.784-50.346 26.752 67.541 9.898 117.504 4.864 129.834 31.402 34.347 50.474 78.123 50.474 131.67 0 188.586-114.73 230.016-224.042 242.09 17.578 15.232 33.578 44.672 33.578 90.454v135.85c0 13.142 7.936 27.606 32.854 22.87C862.25 912.597 1002.667 728.747 1002.667 512c0-271.019-219.648-490.667-490.71-490.667z"
-            fill="#333" />
+            fill="#333"
+          />
         </svg>
       </a>
     </div>
   </div>
 </template>
+
 <style scoped>
 .btns {
   position: fixed;

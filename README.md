@@ -151,10 +151,10 @@ If necessary, more common special cases will be added.
  * Util of convert html to a4 template
  *
  * @param {string|Element|HTMLCollection} root specify root element. Valid inputs: string(css selector), element(s)
- * @param {string} [mode='auto'] [manual|auto] manually/automatically mark page and page unit
- * @param {number} [recLimit=500] recursion limitation，avoid infinite loop when encounter paging bugs
- * @param {number} [pageLimit=500] paging limitation，avoid infinite loop when encounter paging bugs
- * @returns {Object} {
+ * @param {string} [mode] [manual|auto] manually/automatically mark page and page unit
+ * @param {number} [recLimit] recursion limitation，avoid infinite loop when encounter paging bugs
+ * @param {number} [pageLimit] paging limitation，avoid infinite loop when encounter paging bugs
+ * @returns {object} {
  *   execPaging: execute paging program (Please ensure the webpage has been rendered before invoke `execPaging`)
  * }
  */

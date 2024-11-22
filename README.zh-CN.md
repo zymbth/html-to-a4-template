@@ -153,10 +153,10 @@ execPaging()
  * 公共分页工具方法
  *
  * @param {string|Element|HTMLCollection} root 页面容器，可传入选择器、元素、元素集合
- * @param {string} [mode='auto'] [manual|auto] manual: 手动设置页容器和分页单元; auto: 指定root为页面根元素，自动将其所有子元素设置为分页容器，所有孙子元素设置为分页单元
- * @param {number} [recLimit=500] 递归限制，避免出现分页bug时死循环
- * @param {number} [pageLimit=500] 分页限制，避免出现分页bug时死循环
- * @returns {Object} {
+ * @param {string} [mode] [manual|auto] manual: 手动设置页容器和分页单元; auto: 指定root为页面根元素，自动将其所有子元素设置为分页容器，所有孙子元素设置为分页单元
+ * @param {number} [recLimit] 递归限制，避免出现分页bug时死循环
+ * @param {number} [pageLimit] 分页限制，避免出现分页bug时死循环
+ * @returns {object} {
  *   execPaging: 执行分页（请确保页面已经渲染完毕再执行）
  * }
  */

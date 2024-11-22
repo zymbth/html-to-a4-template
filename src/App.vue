@@ -1,8 +1,8 @@
 <script setup>
-import { ref, nextTick, computed } from 'vue'
 import AutoModeComp from '@/views/auto-mode.vue'
 import ManualModeComp from '@/views/manual-mode.vue'
 import SplitRowspanTDCell from '@/views/split-rowspan-td.vue'
+import { computed, nextTick, ref } from 'vue'
 import langComp from './components/lang.vue'
 
 const currNo = ref(1)
@@ -45,19 +45,24 @@ const execPrint = () => window.print()
   <div>
     <div class="views">
       <span
-        :class="['view', { active: view.no === currNo }]"
+        class="view" :class="[{ active: view.no === currNo }]"
         v-for="view in views"
         :key="view.no"
         @click="handleClick(view.no)"
-        >{{ $t(view.title) }}</span
-      >
+      >{{ $t(view.title) }}</span>
       <langComp class="lang" />
     </div>
     <component ref="compViewRef" v-if="currView" :is="currView" />
     <div class="btns">
-      <button @click="refreshComp">{{ $t('menu.refresh') }}</button>
-      <button @click="startPaging">{{ $t('menu.paging') }}</button>
-      <button @click="execPrint">{{ $t('menu.print') }}</button>
+      <button @click="refreshComp">
+        {{ $t('menu.refresh') }}
+      </button>
+      <button @click="startPaging">
+        {{ $t('menu.paging') }}
+      </button>
+      <button @click="execPrint">
+        {{ $t('menu.print') }}
+      </button>
     </div>
   </div>
 </template>
