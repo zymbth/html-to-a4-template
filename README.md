@@ -23,6 +23,16 @@ lib size:
 | /dist/html2a4tmpl.es.js  | 29.60 kB | 9.34 kB |
 | /dist/html2a4tmpl.umd.js | 23.01 kB | 8.54 kB |
 
+### demo
+
+- basic:
+
+![paging](/doc/demo-html2a4.gif)
+
+- auto split merged cells:
+
+![paging](/doc/demo-html2a4-1.gif)
+
 ### Design and implementation
 
 The content of the webpage is too rich. In order to convert the webpage into the A4 template, the idea is as follows:

@@ -23,6 +23,16 @@ npm 包: [html-to-a4-template](https://www.npmjs.com/package/html-to-a4-template
 | /dist/html2a4tmpl.es.js  | 29.60 kB | 9.34 kB |
 | /dist/html2a4tmpl.umd.js | 23.01 kB | 8.54 kB |
 
+### 演示
+
+- 分页：
+
+![paging](/doc/demo-html2a4.gif)
+
+- 合并单元格处理：
+
+![paging](/doc/demo-html2a4-1.gif)
+
 ### 设计及实现思路
 
 网页的内容实在过于丰富，为了实现将网页转换成 A4 模板，思路如下：
