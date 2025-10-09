@@ -66,14 +66,18 @@ defineExpose({ execPaging })
           </tr>
           <tr>
             <td>-</td>
-            <td rowspan="5" class="highlight-td">Test Cell 2</td>
+            <td rowspan="7" class="highlight-td">
+              Test Cell 2
+            </td>
             <td>-</td>
           </tr>
           <tr v-for="_ in 3">
             <td v-for="_ in 2">-</td>
           </tr>
-          <tr>
-            <td v-for="_ in 5">-</td>
+          <tr v-for="t in 3" :key="t">
+            <td v-for="d in 5" :key="d">
+              -
+            </td>
           </tr>
           <!-- End: merge cells -->
           <tr v-for="_ in 8">
